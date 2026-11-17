@@ -1,3 +1,4 @@
+import '@fontsource/bebas-neue';
 import '@fontsource/press-start-2p';
 import '@fontsource/vt323';
 import { createViewport } from './engine/canvas';
@@ -14,6 +15,7 @@ async function loadFonts(): Promise<void> {
   await Promise.all([
     document.fonts.load('32px VT323', 'Aa0'),
     document.fonts.load('16px "Press Start 2P"', 'Aa0'),
+    document.fonts.load('48px "Bebas Neue"', 'Aa0'),
   ]);
 }
 

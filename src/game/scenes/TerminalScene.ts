@@ -142,7 +142,7 @@ export class TerminalScene implements Scene {
       head: true,
       color: '#7a725f',
     });
-    ctx.fillStyle = this.t % 2 < 1.8 ? C.lime : '#2a5a1a';
+    ctx.fillStyle = this.t % 2 < 1.8 ? C.gold : '#3a2a08';
     ctx.beginPath();
     ctx.arc(SCREEN.x + SCREEN.w - 6, SCREEN.y + SCREEN.h + 22, 4, 0, Math.PI * 2);
     ctx.fill();
@@ -155,7 +155,7 @@ export class TerminalScene implements Scene {
     ctx.fill();
     ctx.clip();
     const glow = ctx.createRadialGradient(W / 2, H / 2 - 20, 50, W / 2, H / 2 - 20, 520);
-    glow.addColorStop(0, 'rgba(57,255,122,0.08)');
+    glow.addColorStop(0, 'rgba(255,180,58,0.09)');
     glow.addColorStop(1, 'rgba(0,0,0,0.5)');
     ctx.fillStyle = glow;
     ctx.fillRect(SCREEN.x, SCREEN.y, SCREEN.w, SCREEN.h);
@@ -205,7 +205,7 @@ export class TerminalScene implements Scene {
       const r = this.modeRect(i);
       const on = m === this.mode;
       if (on || i === this.hoverMode) {
-        ctx.fillStyle = on ? C.crt : 'rgba(57,255,122,0.2)';
+        ctx.fillStyle = on ? C.crt : 'rgba(255,180,58,0.22)';
         ctx.fillRect(r.x, r.y, r.w, r.h);
       }
       text(ctx, m.toUpperCase(), r.x + r.w / 2, r.y + 21, {

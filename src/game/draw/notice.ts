@@ -6,15 +6,15 @@ export const NOTICE_OK: Rect = { x: W / 2 - 90, y: 408, w: 180, h: 36 };
 
 /** The "welcome" card shown on first entering the store. Drawn on the 960x540 stage. */
 export function drawNotice(ctx: CanvasRenderingContext2D, flash: boolean, hoverOk: boolean): void {
-  ctx.fillStyle = 'rgba(7,4,15,0.8)';
+  ctx.fillStyle = 'rgba(20,14,9,0.8)';
   ctx.fillRect(0, 0, W, H);
   const r: Rect = { x: W / 2 - 300, y: 90, w: 600, h: 366 };
   ctx.fillStyle = C.card;
   ctx.fillRect(r.x, r.y, r.w, r.h);
-  ctx.strokeStyle = C.yellow;
+  ctx.strokeStyle = C.gold;
   ctx.lineWidth = 3;
   ctx.strokeRect(r.x, r.y, r.w, r.h);
-  ctx.fillStyle = C.yellow;
+  ctx.fillStyle = C.gold;
   ctx.fillRect(r.x, r.y, r.w, 40);
   text(ctx, 'STORE NOTICE', W / 2, r.y + 27, {
     size: 16,
@@ -36,9 +36,9 @@ export function drawNotice(ctx: CanvasRenderingContext2D, flash: boolean, hoverO
   body.forEach((line, i) =>
     text(ctx, line, W / 2, r.y + 78 + i * 25, {
       size: 22,
-      color: i === body.length - 1 ? C.cyan : C.white,
+      color: i === body.length - 1 ? C.teal : C.white,
       align: 'center',
     }),
   );
-  button(ctx, NOTICE_OK, 'ENTER STORE', hoverOk || flash, C.yellow);
+  button(ctx, NOTICE_OK, 'ENTER STORE', hoverOk || flash, C.gold);
 }

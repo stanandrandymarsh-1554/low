@@ -2,6 +2,7 @@ import {
   BoxGeometry,
   CanvasTexture,
   Color,
+  CylinderGeometry,
   DirectionalLight,
   EdgesGeometry,
   Fog,
@@ -17,6 +18,7 @@ import {
   PointLight,
   Raycaster,
   Scene,
+  SphereGeometry,
   Vector2,
   type BufferGeometry,
   type Texture,
@@ -28,16 +30,20 @@ import type { Entry } from '../data/types';
 import { tapeHue } from '../draw/tape';
 import { C } from '../theme';
 import type { Gondola, Layout } from '../store/layout';
-import { EYE_HEIGHT, SHELF, STORE, TAPE, TAPE_TILT } from '../store/scale';
+import { EYE_HEIGHT, SHELF, TAPE, TAPE_TILT } from '../store/scale';
 import {
   carpetTexture,
+  ceilingTexture,
+  clockTexture,
   coverTexture,
+  headerTexture,
+  marqueeTexture,
+  mediaButtonTexture,
   openSignTexture,
-  shopSignTexture,
-  signTexture,
+  plasterTexture,
   terminalTexture,
-  wallTexture,
   whiteTexture,
+  woodTexture,
 } from './textures';
 
 /** What the crosshair (or cursor) is pointing at. */
@@ -87,21 +93,24 @@ export class StoreWorld {
     tape: new BoxGeometry(TAPE.w, TAPE.h, TAPE.d),
   };
   private readonly mat = {
-    body: new MeshLambertMaterial({ color: hex('#34308a') }),
-    spine: new MeshLambertMaterial({ color: hex('#221f63') }),
-    ledge: new MeshLambertMaterial({ color: hex('#c3b8ea') }),
-    plastic: new MeshLambertMaterial({ color: hex('#14101f') }),
-    counter: new MeshLambertMaterial({ color: hex('#40308c') }),
-    counterTop: new MeshLambertMaterial({ color: hex('#b9a97f') }),
-    beige: new MeshLambertMaterial({ color: hex('#d9d2bf'), emissive: hex('#3a362c') }),
-    frame: new MeshLambertMaterial({ color: hex('#2b2b3a') }),
-    ceiling: new MeshBasicMaterial({ color: hex('#241749') }),
-    pink: new MeshBasicMaterial({ color: hex(C.pink) }),
-    cyan: new MeshBasicMaterial({ color: hex(C.cyan) }),
-    lightPanel: new MeshBasicMaterial({ color: hex('#fff3d8') }),
-    shadow: new MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 }),
-    glass: new MeshBasicMaterial({ color: hex('#6f9bd6'), transparent: true, opacity: 0.3 }),
-    mat: new MeshLambertMaterial({ color: hex('#5a1630') }),
+    cabinet: new MeshLambertMaterial({ color: hex('#2e241d') }),
+    backPanel: new MeshLambertMaterial({ color: hex('#17110d') }),
+    ledge: new MeshLambertMaterial({ color: hex('#cfa56e') }),
+    endPanel: new MeshLambertMaterial({ color: hex('#8d5c2e') }),
+    trim: new MeshLambertMaterial({ color: hex('#d9a441') }),
+    plastic: new MeshLambertMaterial({ color: hex('#14110d') }),
+    counter: new MeshLambertMaterial({ color: hex('#3b2b20') }),
+    counterTop: new MeshLambertMaterial({ color: hex('#c99c64') }),
+    counterFront: new MeshLambertMaterial({ color: hex('#d6802a') }),
+    beige: new MeshLambertMaterial({ color: hex('#cdbfa3'), emissive: hex('#3a352a') }),
+    frame: new MeshLambertMaterial({ color: hex('#2a1d14') }),
+    dark: new MeshLambertMaterial({ color: hex('#1e1a17') }),
+    cream: new MeshLambertMaterial({ color: hex('#e8dcc0') }),
+    gold: new MeshLambertMaterial({ color: hex('#d9a441'), emissive: hex('#4a3510') }),
+    lightPanel: new MeshBasicMaterial({ color: hex('#fff2d6') }),
+    shadow: new MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.32 }),
+    glass: new MeshBasicMaterial({ color: hex('#a9c6e2'), transparent: true, opacity: 0.55 }),
+    rug: new MeshLambertMaterial({ color: hex('#7a3322') }),
   };
 
   constructor(
@@ -113,22 +122,23 @@ export class StoreWorld {
     this.white = whiteTexture();
     this.camera.rotation.order = 'YXZ';
 
-    this.scene.background = hex('#0b0618');
-    this.scene.fog = new Fog(hex('#120a26'), 9, 34);
+    this.scene.background = hex('#1a120c');
+    this.scene.fog = new Fog(hex('#1a120c'), 12, 40);
     this.scene.add(this.solids);
 
     this.buildLights();
     this.buildShell();
     this.buildGondolas();
-    this.buildSigns();
+    this.buildHeaders();
     this.buildCounter();
     this.buildDoor();
+    this.buildDecor();
     this.buildPosters();
     this.buildTapes();
 
     this.outline = new LineSegments(
       new EdgesGeometry(this.geo.tape),
-      new LineBasicMaterial({ color: hex(C.yellow), depthTest: false }),
+      new LineBasicMaterial({ color: hex(C.gold), depthTest: false }),
     );
     this.outline.renderOrder = 10;
     this.outline.scale.setScalar(1.12);
@@ -254,20 +264,37 @@ export class StoreWorld {
   }
 
   private buildLights(): void {
-    this.scene.add(new HemisphereLight(hex('#e4dcff'), hex('#3a2a66'), 1.15));
-    const front = new DirectionalLight(0xffffff, 0.8);
+    this.scene.add(new HemisphereLight(hex('#fff1dc'), hex('#5a4030'), 1.25));
+    const front = new DirectionalLight(hex('#fff0d8'), 0.85);
     front.position.set(2, 6, 5);
-    const back = new DirectionalLight(0xffeedd, 0.6);
+    const back = new DirectionalLight(hex('#ffe6c4'), 0.65);
     back.position.set(-2, 6, -5);
     this.scene.add(front, back);
 
-    const { room } = this.layout;
-    const cx = (room.minX + room.maxX) / 2;
-    const pink = new PointLight(hex(C.pink), 9, 16, 1.4);
-    pink.position.set(cx, 2.6, room.minZ + 1.2);
-    const cyan = new PointLight(hex(C.cyan), 6, 12, 1.4);
-    cyan.position.set(room.maxX - 2, 2.4, room.maxZ - 1.2);
-    this.scene.add(pink, cyan);
+    // Pools of warm light over the counter and the middle of the shop.
+    const { room, counter } = this.layout;
+    const warm = new PointLight(hex('#ffc47a'), 7, 12, 1.4);
+    warm.position.set(counter.x, 2.7, counter.z + 0.5);
+    const mid = new PointLight(hex('#ffd9a0'), 6, 16, 1.4);
+    mid.position.set((room.minX + room.maxX) / 2, 2.8, (room.minZ + room.maxZ) / 2);
+    this.scene.add(warm, mid);
+  }
+
+  /** A wall panel from y0 to y1 with a tiling texture, facing into the room. */
+  private wall(
+    length: number,
+    y0: number,
+    y1: number,
+    tex: CanvasTexture,
+    tile: number,
+    x: number,
+    z: number,
+    ry: number,
+  ): void {
+    const t = tex.clone();
+    t.repeat.set(length / tile, (y1 - y0) / tile);
+    t.needsUpdate = true;
+    this.plane(length, y1 - y0, new MeshLambertMaterial({ map: t }), x, (y0 + y1) / 2, z, ry);
   }
 
   private buildShell(): void {
@@ -283,27 +310,36 @@ export class StoreWorld {
     const floor = this.plane(w, d, new MeshLambertMaterial({ map: carpet }), cx, 0, cz);
     floor.rotation.x = -Math.PI / 2;
 
-    const ceiling = this.plane(w, d, this.mat.ceiling, cx, h, cz);
+    const tiles = ceilingTexture(this.anisotropy);
+    tiles.repeat.set(w / 1.2, d / 1.2);
+    const ceiling = this.plane(w, d, new MeshBasicMaterial({ map: tiles }), cx, h, cz);
     ceiling.rotation.x = Math.PI / 2;
 
-    const wall = wallTexture(this.anisotropy);
-    const wallMat = (length: number) => {
-      const tex = wall.clone();
-      tex.repeat.set(length / 3, 1);
-      tex.needsUpdate = true;
-      return new MeshLambertMaterial({ map: tex });
-    };
-    this.plane(w, h, wallMat(w), cx, h / 2, room.minZ, 0);
-    this.plane(w, h, wallMat(w), cx, h / 2, room.maxZ, Math.PI);
-    this.plane(d, h, wallMat(d), room.minX, h / 2, cz, Math.PI / 2);
-    this.plane(d, h, wallMat(d), room.maxX, h / 2, cz, -Math.PI / 2);
-
-    // Neon trim running round the walls.
-    const y = h - 0.3;
-    this.box(w, 0.04, 0.03, this.mat.pink, cx, y, room.minZ + 0.02, false);
-    this.box(w, 0.04, 0.03, this.mat.pink, cx, y, room.maxZ - 0.02, false);
-    this.box(0.03, 0.04, d, this.mat.cyan, room.minX + 0.02, y, cz, false);
-    this.box(0.03, 0.04, d, this.mat.cyan, room.maxX - 0.02, y, cz, false);
+    // Walls: wood panelling at the back; orange plaster over a wood wainscot elsewhere.
+    const wood = woodTexture(this.anisotropy);
+    const plaster = plasterTexture(this.anisotropy);
+    const rail = 1.05;
+    this.wall(w, 0, h, wood, 2, cx, room.minZ, 0);
+    const sides: [number, number, number, number][] = [
+      [w, cx, room.maxZ, Math.PI],
+      [d, room.minX, cz, Math.PI / 2],
+      [d, room.maxX, cz, -Math.PI / 2],
+    ];
+    for (const [length, x, z, ry] of sides) {
+      this.wall(length, 0, rail, wood, 2, x, z, ry);
+      this.wall(length, rail, h, plaster, 3, x, z, ry);
+    }
+    // Chair rail and skirting.
+    for (const [length, x, z, ry] of sides) {
+      const along = ry === Math.PI ? 'x' : 'z';
+      const inset = ry === Math.PI ? -0.02 : ry > 0 ? 0.02 : -0.02;
+      const bx = along === 'x' ? x : x + inset;
+      const bz = along === 'x' ? z + inset : z;
+      const [sx, sz] = along === 'x' ? [length, 0.04] : [0.04, length];
+      this.box(sx, 0.05, sz, this.mat.cream, bx, rail, bz, false);
+      this.box(sx, 0.1, sz, this.mat.dark, bx, 0.05, bz, false);
+    }
+    this.box(w, 0.1, 0.04, this.mat.dark, cx, 0.05, room.minZ + 0.02, false);
 
     // Fluorescent panels.
     for (let x = room.minX + 2.5; x < room.maxX; x += 5) {
@@ -311,17 +347,6 @@ export class StoreWorld {
         this.box(1.2, 0.04, 0.6, this.mat.lightPanel, x, h - 0.02, z, false);
       }
     }
-
-    // The big sign on the back wall.
-    const sign = shopSignTexture(this.anisotropy);
-    this.plane(
-      Math.min(w - 1, 6),
-      Math.min(w - 1, 6) * (360 / 2048),
-      new MeshBasicMaterial({ map: sign, transparent: true, toneMapped: false }),
-      cx,
-      2.35,
-      room.minZ + 0.03,
-    );
   }
 
   private buildGondolas(): void {
@@ -335,16 +360,15 @@ export class StoreWorld {
     const shadow = this.plane(length + 0.3, depth + 0.3, this.mat.shadow, x, 0.004, z);
     shadow.rotation.x = -Math.PI / 2;
 
-    // Storage cabinet, back panel and cap.
-    this.box(length, SHELF.baseH, depth, this.mat.body, x, SHELF.baseH / 2, z);
+    // Storage cabinet, black back panel, cap and wooden end panels.
+    this.box(length, SHELF.baseH, depth, this.mat.cabinet, x, SHELF.baseH / 2, z);
     const spineH = top - SHELF.baseH;
-    this.box(length, spineH, SHELF.spine, this.mat.spine, x, SHELF.baseH + spineH / 2, z);
-    this.box(length, 0.03, 0.14, this.mat.body, x, top - 0.015, z);
-    // End panels.
+    this.box(length, spineH, SHELF.spine, this.mat.backPanel, x, SHELF.baseH + spineH / 2, z);
+    this.box(length, 0.03, 0.14, this.mat.cabinet, x, top - 0.015, z);
     for (const sx of [-1, 1]) {
-      this.box(0.04, top, depth, this.mat.body, x + (sx * (length - 0.04)) / 2, top / 2, z);
+      this.box(0.04, top, depth, this.mat.endPanel, x + (sx * (length - 0.04)) / 2, top / 2, z);
     }
-    // A ledge and lip under each row, on both sides, plus neon along the top.
+    // Light wooden ledge and lip under each row, on both sides, and a thin gold trim at the top.
     for (const dir of [1, -1]) {
       const centre = SHELF.spine / 2 + SHELF.ledgeDepth / 2;
       for (const bottom of SHELF.rowBottoms) {
@@ -367,52 +391,32 @@ export class StoreWorld {
           z + dir * (SHELF.spine / 2 + SHELF.ledgeDepth - 0.006),
         );
       }
-      this.box(
-        length - 0.04,
-        0.012,
-        0.014,
-        dir === 1 ? this.mat.pink : this.mat.cyan,
-        x,
-        top + 0.003,
-        z + dir * 0.07,
-        false,
-      );
+      this.box(length - 0.04, 0.012, 0.014, this.mat.trim, x, top + 0.003, z + dir * 0.07, false);
     }
   }
 
-  private buildSigns(): void {
-    const top = this.layout.room.height;
+  /** Black category boards standing on top of the shelving, one per aisle, facing the aisle. */
+  private buildHeaders(): void {
+    const height = 0.36;
+    const y = SHELF.height + height / 2 + 0.005;
     for (const s of this.layout.spans) {
       const front = s.yaw === 0;
-      const width = Math.min(Math.max(s.x1 - s.x0, 1.6), 3.4);
-      const height = width * (224 / 1024);
-      const tex = signTexture(s.aisle, front ? C.pink : C.cyan, this.anisotropy);
-      const zc = s.zFace + (front ? -1 : 1) * (SHELF.depth / 2);
+      const dir = front ? 1 : -1;
+      const zc = s.zFace - dir * (SHELF.depth / 2);
+      const length = s.x1 - s.x0;
       const x = (s.x0 + s.x1) / 2;
+      this.box(length, height, 0.05, this.mat.dark, x, y, zc + dir * 0.03);
+      const tex = headerTexture(s.aisle, length / height, this.anisotropy);
       this.plane(
-        width,
+        length,
         height,
-        new MeshBasicMaterial({ map: tex, toneMapped: false }),
+        new MeshBasicMaterial({ map: tex }),
         x,
-        STORE.signY,
-        zc + (front ? 0.012 : -0.012),
+        y,
+        zc + dir * 0.0565,
         s.yaw,
+        true,
       );
-      // Two wires up to the ceiling.
-      const wireTop = top;
-      const wireBottom = STORE.signY + height / 2;
-      for (const dx of [-1, 1]) {
-        this.box(
-          0.008,
-          wireTop - wireBottom,
-          0.008,
-          this.mat.frame,
-          x + dx * (width / 2 - 0.12),
-          (wireTop + wireBottom) / 2,
-          zc,
-          false,
-        );
-      }
     }
   }
 
@@ -420,7 +424,11 @@ export class StoreWorld {
     const { counter: c, terminal: t } = this.layout;
     this.box(c.w, c.h - 0.06, c.d, this.mat.counter, c.x, (c.h - 0.06) / 2, c.z);
     this.box(c.w + 0.08, 0.06, c.d + 0.08, this.mat.counterTop, c.x, c.h - 0.03, c.z);
-    this.box(c.w, 0.02, 0.012, this.mat.pink, c.x, 0.5, c.z + c.d / 2 + 0.004, false);
+    // An orange laminate panel on the customer side, and a brass service bell.
+    this.box(c.w - 0.1, 0.5, 0.012, this.mat.counterFront, c.x, 0.5, c.z + c.d / 2 + 0.004, false);
+    const bell = new Mesh(new CylinderGeometry(0.02, 0.06, 0.04, 16), this.mat.gold);
+    bell.position.set(c.x + 0.85, c.h + 0.02, c.z + 0.12);
+    this.scene.add(bell);
     const shadow = this.plane(c.w + 0.3, c.d + 0.3, this.mat.shadow, c.x, 0.004, c.z);
     shadow.rotation.x = -Math.PI / 2;
 
@@ -452,7 +460,7 @@ export class StoreWorld {
     this.box(0.08, h, 0.08, this.mat.frame, door.x + door.w / 2, h / 2, z, false);
     this.box(door.w + 0.08, 0.08, 0.08, this.mat.frame, door.x, h, z, false);
     this.plane(door.w, h, this.mat.glass, door.x, h / 2, z, Math.PI);
-    this.box(door.w, 0.02, 1.0, this.mat.mat, door.x, 0.01, door.z - 0.6, false);
+    this.box(door.w, 0.02, 1.0, this.mat.rug, door.x, 0.01, door.z - 0.6, false);
     const open = openSignTexture(this.anisotropy);
     this.plane(
       0.6,
@@ -463,6 +471,105 @@ export class StoreWorld {
       door.z - 0.03,
       Math.PI,
     );
+  }
+
+  /** Marquee, media-button rings, windows, clock and balloons. */
+  private buildDecor(): void {
+    const { room, door, counter } = this.layout;
+    const cx = (room.minX + room.maxX) / 2;
+    const h = room.height;
+
+    // Gold marquee on the back wall.
+    const mw = Math.min(room.maxX - room.minX - 1, 5.4);
+    this.plane(
+      mw,
+      mw * (420 / 2048),
+      new MeshBasicMaterial({ map: marqueeTexture(this.anisotropy), toneMapped: false }),
+      cx,
+      2.45,
+      room.minZ + 0.03,
+    );
+
+    // Glowing media buttons stacked on the left wall, by the front.
+    (['play', 'ff', 'stop', 'pause'] as const).forEach((kind, i) => {
+      this.plane(
+        0.42,
+        0.42,
+        new MeshBasicMaterial({
+          map: mediaButtonTexture(kind, this.anisotropy),
+          transparent: true,
+          toneMapped: false,
+        }),
+        room.minX + 0.03,
+        2.45 - i * 0.5,
+        room.maxZ - 2.2,
+        Math.PI / 2,
+      );
+    });
+
+    // Two windows on the front wall.
+    for (const wx of [-3.3, 3.3]) {
+      if (Math.abs(wx) > (room.maxX - room.minX) / 2 - 1.2) continue;
+      const z = room.maxZ - 0.04;
+      this.plane(1.9, 1.15, this.mat.glass, wx, 1.75, z, Math.PI);
+      this.box(2.0, 0.07, 0.06, this.mat.frame, wx, 2.35, z, false);
+      this.box(2.0, 0.07, 0.06, this.mat.frame, wx, 1.15, z, false);
+      this.box(0.07, 1.2, 0.06, this.mat.frame, wx - 0.95, 1.75, z, false);
+      this.box(0.07, 1.2, 0.06, this.mat.frame, wx + 0.95, 1.75, z, false);
+      this.box(0.04, 1.2, 0.04, this.mat.frame, wx, 1.75, z, false);
+      this.box(1.9, 0.04, 0.04, this.mat.frame, wx, 1.75, z, false);
+    }
+
+    // A clock on the right wall above the counter.
+    this.plane(
+      0.5,
+      0.5,
+      new MeshBasicMaterial({ map: clockTexture(this.anisotropy), transparent: true }),
+      room.maxX - 0.03,
+      2.45,
+      counter.z - 1.1,
+      -Math.PI / 2,
+    );
+
+    // A bunch of balloons tied to a weight by the door.
+    const colours = [
+      '#d94a3a',
+      '#f2c14e',
+      '#4a8fc2',
+      '#7bb661',
+      '#e8892b',
+      '#8d74c4',
+      '#d94a3a',
+      '#f2c14e',
+    ];
+    const bx = door.x - 1.9;
+    const bz = door.z - 0.9;
+    this.box(0.18, 0.12, 0.18, this.mat.dark, bx, 0.06, bz, false);
+    const balloon = new SphereGeometry(0.17, 18, 14);
+    colours.forEach((c, i) => {
+      const a = (i / colours.length) * Math.PI * 2;
+      const r = 0.13 + (i % 3) * 0.05;
+      const by = Math.min(h - 0.35, 2.05 + (i % 4) * 0.17);
+      const m = new Mesh(
+        balloon,
+        new MeshLambertMaterial({ color: hex(c), emissive: hex(c).multiplyScalar(0.25) }),
+      );
+      m.scale.set(1, 1.18, 1);
+      m.position.set(bx + Math.cos(a) * r, by, bz + Math.sin(a) * r);
+      this.scene.add(m);
+      const string = this.box(
+        0.006,
+        by - 0.17 - 0.15,
+        0.006,
+        this.mat.cream,
+        bx,
+        0.12 + (by - 0.32) / 2,
+        bz,
+        false,
+      );
+      string.position.x = bx + Math.cos(a) * r * 0.4;
+      string.position.z = bz + Math.sin(a) * r * 0.4;
+    });
   }
 
   /** Big cover art on the side walls, from the strongest-evidence entries. */
@@ -479,11 +586,23 @@ export class StoreWorld {
       if (!entry) return;
       const tex = coverTexture(entry, this.anisotropy, 360, 634);
       const h = 1.3;
+      const w = h * (TAPE.w / TAPE.h);
+      const inward = spot.yaw === Math.PI / 2 ? 1 : -1;
+      this.box(
+        0.03,
+        h + 0.08,
+        w + 0.08,
+        this.mat.frame,
+        spot.x - inward * 0.004,
+        spot.y,
+        spot.z,
+        false,
+      );
       this.plane(
-        h * (TAPE.w / TAPE.h),
+        w,
         h,
         new MeshLambertMaterial({ map: tex, emissiveMap: tex, emissive: 0x777777 }),
-        spot.x,
+        spot.x + inward * 0.015,
         spot.y,
         spot.z,
         spot.yaw,

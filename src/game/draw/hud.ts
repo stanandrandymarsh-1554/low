@@ -1,7 +1,7 @@
 import { fitText } from '../../engine/text';
 import { subtitle } from '../backcover';
 import type { Entry } from '../data/types';
-import { C, EVIDENCE_COLOR, TOXICITY_STYLE } from '../theme';
+import { C, EVIDENCE_COLOR, PANEL, TOXICITY_STYLE } from '../theme';
 import { keyHint, ratingSticker, setFont, text } from './ui';
 
 const panel = (
@@ -12,7 +12,7 @@ const panel = (
   h: number,
   edge: string,
 ) => {
-  ctx.fillStyle = 'rgba(7,4,15,0.88)';
+  ctx.fillStyle = PANEL;
   ctx.fillRect(x, y, w, h);
   ctx.strokeStyle = edge;
   ctx.lineWidth = 2;
@@ -25,7 +25,7 @@ export function drawCrosshair(
   y: number,
   active: boolean,
 ): void {
-  ctx.strokeStyle = active ? C.yellow : 'rgba(244,236,255,0.85)';
+  ctx.strokeStyle = active ? C.gold : 'rgba(246,236,213,0.9)';
   ctx.fillStyle = ctx.strokeStyle;
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -47,7 +47,7 @@ export function drawTapeTooltip(
   const w = TOOLTIP_W;
   const h = TOOLTIP_H;
   const measure = (s: string) => ctx.measureText(s).width;
-  panel(ctx, x, y, w, h, C.pink);
+  panel(ctx, x, y, w, h, C.accent);
 
   setFont(ctx, 12, true);
   text(ctx, fitText(entry.name.toUpperCase(), w - 76, measure), x + 14, y + 28, {
@@ -62,7 +62,7 @@ export function drawTapeTooltip(
   const kind = entry.kind === 'botanical' ? 'BOTANICAL' : 'SYNTHETIC';
   text(ctx, kind, x + 14, y + 76, {
     size: 20,
-    color: entry.kind === 'botanical' ? C.lime : C.cyan,
+    color: entry.kind === 'botanical' ? C.sage : C.teal,
   });
   let cx = x + 14 + 100;
   if (entry.evidence) {
@@ -81,7 +81,7 @@ export function drawTapeTooltip(
   const effects = entry.effects.slice(0, 3).join(', ');
   text(ctx, fitText(effects, w - 28, measure), x + 14, y + 98, { size: 20 });
 
-  keyHint(ctx, x + 14, y + h - 8, 'E', 'or click: open the box', C.yellow);
+  keyHint(ctx, x + 14, y + h - 8, 'E', 'or click: open the box', C.gold);
 }
 
 export function drawPrompt(
@@ -91,9 +91,9 @@ export function drawPrompt(
   title: string,
   hint: string,
 ): void {
-  panel(ctx, x, y, 320, 70, C.cyan);
+  panel(ctx, x, y, 320, 70, C.teal);
   text(ctx, title, x + 14, y + 28, { size: 12, head: true });
-  keyHint(ctx, x + 14, y + 56, 'E', hint, C.yellow);
+  keyHint(ctx, x + 14, y + 56, 'E', hint, C.gold);
 }
 
 /** "NOW BROWSING: AISLE" badge. */
@@ -107,13 +107,13 @@ export function drawAisleBadge(
   setFont(ctx, 12, true);
   const label = fitText(aisle.toUpperCase(), 300, measure);
   const w = Math.max(190, measure(label) + 32);
-  panel(ctx, x, y, w, 58, C.yellow);
+  panel(ctx, x, y, w, 58, C.gold);
   text(ctx, 'NOW BROWSING', x + 14, y + 22, { size: 18, color: C.dim });
-  text(ctx, label, x + 14, y + 46, { size: 12, head: true, color: C.yellow });
+  text(ctx, label, x + 14, y + 46, { size: 12, head: true, color: C.gold });
 }
 
 export function drawHelpBar(ctx: CanvasRenderingContext2D, width: number, height: number): void {
-  ctx.fillStyle = 'rgba(7,4,15,0.8)';
+  ctx.fillStyle = 'rgba(20,14,9,0.8)';
   ctx.fillRect(0, height - 34, width, 34);
   let x = 16;
   const y = height - 12;
@@ -129,11 +129,11 @@ export function drawLookHint(ctx: CanvasRenderingContext2D, width: number): void
   const w = 330;
   const x = (width - w) / 2;
   const y = 16;
-  panel(ctx, x, y, w, 40, C.pink);
+  panel(ctx, x, y, w, 40, C.accent);
   text(ctx, 'CLICK TO LOOK AROUND', width / 2, y + 26, {
     size: 12,
     head: true,
     align: 'center',
-    color: C.pink,
+    color: C.accent,
   });
 }
