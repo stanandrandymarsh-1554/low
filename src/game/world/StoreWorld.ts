@@ -17,7 +17,6 @@ import {
   PlaneGeometry,
   PointLight,
   Raycaster,
-  RepeatWrapping,
   Scene,
   SphereGeometry,
   Vector2,
@@ -35,7 +34,8 @@ import type { Crowd } from '../store/npc';
 import { buildModel, lookFor } from '../voxel/model';
 import { PeopleKit, Person } from './people';
 import { PropKit } from './props';
-import { outsideTexture, signTexture } from './propTextures';
+import { signTexture } from './propTextures';
+import { Street } from './street';
 import { voxelGeometry } from './voxelMesh';
 import {
   carpetTexture,
@@ -43,7 +43,6 @@ import {
   clockTexture,
   headerTexture,
   marqueeTexture,
-  mediaButtonTexture,
   openSignTexture,
   plasterTexture,
   posterTexture,
@@ -87,7 +86,7 @@ const POSTER = { w: 360, h: 560 } as const;
 /** Builds and renders the 3D store from a layout. Pure presentation: no game rules in here. */
 export class StoreWorld {
   readonly scene = new Scene();
-  readonly camera = new PerspectiveCamera(72, 16 / 9, 0.05, 60);
+  readonly camera = new PerspectiveCamera(72, 16 / 9, 0.1, 160);
   readonly colliders: Box[];
 
   /** Everything you can look at or be blocked by when aiming; used for picking. */
@@ -100,6 +99,7 @@ export class StoreWorld {
   private readonly anisotropy: number;
   private hovered: Mesh | null = null;
   private readonly people: Person[] = [];
+  private readonly street: Street;
   private readonly peopleKit = new PeopleKit();
   private readonly geo = {
     unit: new BoxGeometry(1, 1, 1),
@@ -156,7 +156,7 @@ export class StoreWorld {
     this.buildHeaders();
     this.buildCounter();
     this.buildDoor();
-    this.buildOutside();
+    this.street = new Street(this.scene, this.layout.room, this.anisotropy);
     this.buildProps();
     this.buildDecor();
     this.buildPosters();
@@ -182,6 +182,7 @@ export class StoreWorld {
 
   render(width: number, height: number, alpha = 1, time = 0): void {
     for (const p of this.people) p.update(alpha, time);
+    this.street.update(time);
     const aspect = width / Math.max(height, 1);
     if (this.camera.aspect !== aspect) {
       this.camera.aspect = aspect;
@@ -421,10 +422,12 @@ export class StoreWorld {
     shadow.rotation.x = -Math.PI / 2;
 
     // Storage cabinet, black back panel, cap and wooden end panels.
-    this.box(length, SHELF.baseH, depth, this.mat.cabinet, x, SHELF.baseH / 2, z);
+    // The pieces inside the wooden end panels stop a hair short of them, so no faces coincide.
+    const inner = length - 0.02;
+    this.box(inner, SHELF.baseH, depth - 0.01, this.mat.cabinet, x, SHELF.baseH / 2, z);
     const spineH = top - SHELF.baseH;
-    this.box(length, spineH, SHELF.spine, this.mat.backPanel, x, SHELF.baseH + spineH / 2, z);
-    this.box(length, 0.03, 0.14, this.mat.cabinet, x, top - 0.015, z);
+    this.box(inner, spineH, SHELF.spine, this.mat.backPanel, x, SHELF.baseH + spineH / 2, z);
+    this.box(inner, 0.03, 0.14, this.mat.cabinet, x, top - 0.015, z);
     for (const sx of [-1, 1]) {
       this.box(0.04, top, depth, this.mat.endPanel, x + (sx * (length - 0.04)) / 2, top / 2, z);
     }
@@ -709,57 +712,7 @@ export class StoreWorld {
     );
   }
 
-  /** The street beyond the glass: pavement underfoot and a painted backdrop. */
-  private buildOutside(): void {
-    const { room } = this.layout;
-    const z0 = room.maxZ;
-    const cx = (room.minX + room.maxX) / 2;
-    const width = 80;
-    const pave = this.plane(
-      width,
-      10,
-      new MeshBasicMaterial({ color: hex('#9a968c'), fog: false }),
-      cx,
-      -0.02,
-      z0 + 5,
-    );
-    pave.rotation.x = -Math.PI / 2;
-    const road = this.plane(
-      width,
-      12,
-      new MeshBasicMaterial({ color: hex('#5c5a5e'), fog: false }),
-      cx,
-      -0.03,
-      z0 + 16,
-    );
-    road.rotation.x = -Math.PI / 2;
-    this.box(width, 0.14, 0.2, this.mat.cream, cx, 0.05, z0 + 10, false);
-
-    const tex = outsideTexture(this.anisotropy);
-    tex.wrapS = RepeatWrapping;
-    tex.repeat.set(width / 25.6, 1);
-    this.plane(
-      width,
-      8,
-      new MeshBasicMaterial({ map: tex, fog: false, toneMapped: false }),
-      cx,
-      4,
-      z0 + 20,
-      Math.PI,
-    );
-    // Sky above, so nothing dark shows over the top of the backdrop.
-    this.plane(
-      width,
-      30,
-      new MeshBasicMaterial({ color: hex('#9cc8ea'), fog: false }),
-      cx,
-      23,
-      z0 + 20.1,
-      Math.PI,
-    );
-  }
-
-  /** Marquee, media-button rings, windows, clock and balloons. */
+  /** Marquee, windows, clock and balloons. */
   private buildDecor(): void {
     const { room, door, counter } = this.layout;
     const cx = (room.minX + room.maxX) / 2;
@@ -775,23 +728,6 @@ export class StoreWorld {
       2.45,
       room.minZ + 0.03,
     );
-
-    // Glowing media buttons stacked on the left wall, by the front.
-    (['play', 'ff', 'stop', 'pause'] as const).forEach((kind, i) => {
-      this.plane(
-        0.42,
-        0.42,
-        new MeshBasicMaterial({
-          map: mediaButtonTexture(kind, this.anisotropy),
-          transparent: true,
-          toneMapped: false,
-        }),
-        room.minX + 0.03,
-        2.45 - i * 0.5,
-        room.maxZ - 2.2,
-        Math.PI / 2,
-      );
-    });
 
     // Windows on the front wall, glazed and framed.
     for (const wx of this.windowXs()) {

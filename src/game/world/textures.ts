@@ -192,44 +192,6 @@ export function marqueeTexture(anisotropy: number): CanvasTexture {
   return toTexture(canvas, anisotropy);
 }
 
-/** A glowing media-button ring ("play", "fast-forward", "stop", "pause") for the wall. */
-export function mediaButtonTexture(
-  kind: 'play' | 'ff' | 'stop' | 'pause',
-  anisotropy: number,
-): CanvasTexture {
-  const s = 256;
-  const [canvas, ctx] = makeCanvas(s, s);
-  const colour = '#ffd98a';
-  ctx.strokeStyle = colour;
-  ctx.fillStyle = colour;
-  ctx.shadowColor = '#ffb84a';
-  ctx.shadowBlur = 22;
-  ctx.lineWidth = 12;
-  ctx.beginPath();
-  ctx.arc(s / 2, s / 2, 104, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.lineWidth = 9;
-  ctx.lineJoin = 'round';
-  const tri = (x: number) => {
-    ctx.beginPath();
-    ctx.moveTo(x - 24, s / 2 - 36);
-    ctx.lineTo(x + 30, s / 2);
-    ctx.lineTo(x - 24, s / 2 + 36);
-    ctx.closePath();
-    ctx.stroke();
-  };
-  if (kind === 'play') tri(s / 2 + 4);
-  else if (kind === 'ff') {
-    tri(s / 2 - 22);
-    tri(s / 2 + 26);
-  } else if (kind === 'stop') ctx.strokeRect(s / 2 - 34, s / 2 - 34, 68, 68);
-  else {
-    ctx.strokeRect(s / 2 - 36, s / 2 - 38, 24, 76);
-    ctx.strokeRect(s / 2 + 12, s / 2 - 38, 24, 76);
-  }
-  return toTexture(canvas, anisotropy);
-}
-
 /** The amber-screen search computer on the counter. */
 export function terminalTexture(anisotropy: number): CanvasTexture {
   const [canvas, ctx] = makeCanvas(320, 240);

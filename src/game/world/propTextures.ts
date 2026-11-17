@@ -183,95 +183,97 @@ export function popcornTexture(anisotropy: number): CanvasTexture {
   return toTexture(canvas, anisotropy, true);
 }
 
-/**
- * The street seen through the windows: sky, shops across the road, trees, a pole sign and parked
- * cars. It is stood up as a backdrop 8 m tall, so the ground is at the bottom edge.
- */
-export function outsideTexture(anisotropy: number): CanvasTexture {
-  const w = 2048;
-  const h = 640;
+/** A shop front for the buildings across the road: wall, windows, a door, an awning and a sign. */
+export function facadeTexture(seed: number, label: string, anisotropy: number): CanvasTexture {
+  const w = 512;
+  const h = 512;
   const [canvas, ctx] = makeCanvas(w, h);
-  const sky = ctx.createLinearGradient(0, 0, 0, h);
-  sky.addColorStop(0, '#6fb0e6');
-  sky.addColorStop(1, '#f6ecd6');
-  ctx.fillStyle = sky;
+  const rand = rng(seed);
+  const hue = Math.floor(rand() * 360);
+  ctx.fillStyle = `hsl(${hue} 30% 62%)`;
   ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = `hsl(${hue} 30% 46%)`;
+  ctx.fillRect(0, 0, w, 24);
+  // Upper floors: rows of windows.
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 4; col++) {
+      const x = 36 + col * 118;
+      const y = 50 + row * 88;
+      ctx.fillStyle = '#2c3a4a';
+      ctx.fillRect(x, y, 70, 60);
+      ctx.fillStyle = 'rgba(190,225,250,0.55)';
+      ctx.fillRect(x + 4, y + 4, 62, 52);
+      ctx.fillStyle = `hsl(${hue} 30% 40%)`;
+      ctx.fillRect(x + 33, y, 4, 60);
+      ctx.fillRect(x, y + 28, 70, 4);
+      ctx.fillRect(x - 5, y + 60, 80, 6);
+    }
+  }
+  // The ground floor: shop window, door, awning, sign.
+  ctx.fillStyle = `hsl(${hue} 25% 30%)`;
+  ctx.fillRect(0, 320, w, 192);
+  ctx.fillStyle = '#9fc4dc';
+  ctx.fillRect(28, 372, 220, 120);
+  ctx.fillRect(300, 372, 184, 120);
+  ctx.fillStyle = '#22262c';
+  ctx.fillRect(252, 360, 44, 152);
+  const awning = `hsl(${(hue + 160) % 360} 55% 42%)`;
+  for (let i = 0; i < 16; i++) {
+    ctx.fillStyle = i % 2 ? awning : '#efe6d0';
+    ctx.fillRect(i * 32, 340, 32, 28);
+  }
+  ctx.fillStyle = '#1c1816';
+  ctx.fillRect(40, 290, 432, 44);
+  text(ctx, label, 256, 313, {
+    size: 40,
+    color: '#f2d98a',
+    align: 'center',
+    baseline: 'middle',
+    font: FONT_SIGN,
+  });
+  return toTexture(canvas, anisotropy);
+}
+
+/** Paving: pale slabs with joints. One tile is 1.2 m. */
+export function pavingTexture(anisotropy: number): CanvasTexture {
+  const [canvas, ctx] = makeCanvas(128, 128);
+  ctx.fillStyle = '#b9b4a8';
+  ctx.fillRect(0, 0, 128, 128);
+  const rand = rng(404);
+  for (let i = 0; i < 90; i++) {
+    ctx.fillStyle = `rgba(0,0,0,${0.03 + rand() * 0.04})`;
+    ctx.fillRect(rand() * 128, rand() * 128, 6, 6);
+  }
+  ctx.strokeStyle = '#8f8a7e';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(0, 0, 128, 128);
+  return toTexture(canvas, anisotropy, true);
+}
+
+/** The sky: blue overhead, pale at the horizon, with a few soft clouds. */
+export function skyTexture(): CanvasTexture {
+  const [canvas, ctx] = makeCanvas(1024, 512);
+  const g = ctx.createLinearGradient(0, 0, 0, 512);
+  g.addColorStop(0, '#4f93d8');
+  g.addColorStop(0.55, '#8cc4ee');
+  g.addColorStop(0.78, '#e9f0f0');
+  g.addColorStop(1, '#f3e8d0');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 1024, 512);
   const rand = rng(1999);
-  ctx.fillStyle = 'rgba(255,255,255,0.8)';
-  for (let i = 0; i < 9; i++) {
-    const x = rand() * w;
-    const y = 30 + rand() * 110;
-    for (let k = 0; k < 5; k++) {
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  for (let i = 0; i < 16; i++) {
+    const x = rand() * 1024;
+    const y = 120 + rand() * 170;
+    for (let k = 0; k < 6; k++) {
       ctx.beginPath();
-      ctx.ellipse(x + k * 34, y + (k % 2) * 8, 46, 20, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + k * 30, y + (k % 2) * 8, 44, 17, 0, 0, Math.PI * 2);
       ctx.fill();
     }
   }
-  const base = h;
-  let x = -20;
-  while (x < w) {
-    const bw = 190 + rand() * 140;
-    const bh = 260 + rand() * 200;
-    const hue = Math.floor(rand() * 360);
-    ctx.fillStyle = `hsl(${hue} 32% 58%)`;
-    ctx.fillRect(x, base - bh, bw, bh);
-    ctx.fillStyle = `hsl(${hue} 32% 40%)`;
-    ctx.fillRect(x, base - bh, bw, 18);
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    for (let row = 0; row < 3; row++) {
-      for (let wx = x + 16; wx < x + bw - 36; wx += 52) {
-        ctx.fillRect(wx, base - bh + 50 + row * 70, 34, 44);
-      }
-    }
-    ctx.fillStyle = `hsl(${(hue + 40) % 360} 55% 42%)`;
-    ctx.fillRect(x + bw * 0.3, base - 190, bw * 0.4, 190);
-    ctx.fillStyle = 'rgba(255,255,255,0.55)';
-    ctx.fillRect(x + bw * 0.34, base - 170, bw * 0.32, 90);
-    x += bw + 8;
-  }
-  ctx.fillStyle = '#555';
-  ctx.fillRect(1500, base - 560, 14, 560);
-  ctx.fillStyle = '#d94a3a';
-  ctx.fillRect(1430, base - 640 + 40, 150, 90);
-  text(ctx, 'VIDEO', 1505, base - 640 + 108, {
-    size: 60,
-    color: '#fff',
-    align: 'center',
-    font: FONT_SIGN,
-  });
-  for (const tx of [220, 760, 1200, 1800]) {
-    ctx.fillStyle = '#5a3d26';
-    ctx.fillRect(tx - 9, base - 230, 18, 230);
-    ctx.fillStyle = '#3f7a3a';
-    ctx.beginPath();
-    ctx.arc(tx, base - 290, 84, 0, Math.PI * 2);
-    ctx.arc(tx - 56, base - 240, 58, 0, Math.PI * 2);
-    ctx.arc(tx + 56, base - 240, 58, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  // Cars parked along the kerb, about 1.4 m tall.
-  const cars = [
-    [90, '#c44a3a'],
-    [560, '#3a6aa8'],
-    [980, '#e8e0cf'],
-    [1400, '#3a8a62'],
-    [1860, '#c9a43a'],
-  ] as const;
-  for (const [cx, col] of cars) {
-    const cy = base - 104;
-    ctx.fillStyle = col;
-    ctx.fillRect(cx, cy + 30, 240, 54);
-    ctx.fillRect(cx + 46, cy, 140, 44);
-    ctx.fillStyle = '#9ecbe6';
-    ctx.fillRect(cx + 56, cy + 8, 52, 32);
-    ctx.fillRect(cx + 116, cy + 8, 60, 32);
-    ctx.fillStyle = '#16161a';
-    ctx.beginPath();
-    ctx.arc(cx + 54, cy + 88, 22, 0, Math.PI * 2);
-    ctx.arc(cx + 190, cy + 88, 22, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  return toTexture(canvas, anisotropy);
+  const tex = new CanvasTexture(canvas);
+  tex.colorSpace = SRGBColorSpace;
+  return tex;
 }
 
 /** A small flat face: eyes and a mouth on a skin tone, in blocky pixels. */
