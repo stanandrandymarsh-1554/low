@@ -1,4 +1,4 @@
-import { TOXICITY_LEVELS, type Entry, type Range } from './types';
+import { EVIDENCE_TIERS, TOXICITY_LEVELS, type Entry, type Range } from './types';
 
 /** Checks the catalogue for mistakes. Returns one message per problem (empty if fine). */
 export function validateCatalogue(entries: readonly Entry[]): string[] {
@@ -24,6 +24,16 @@ export function validateCatalogue(entries: readonly Entry[]): string[] {
     if (!e.summary.trim()) problems.push(`${at}: missing summary`);
     if (e.effects.length === 0) problems.push(`${at}: needs at least one effect`);
     if (!TOXICITY_LEVELS.includes(e.toxicity)) problems.push(`${at}: unknown toxicity`);
+
+    if (e.evidence && !(e.evidence in EVIDENCE_TIERS))
+      problems.push(`${at}: unknown evidence tier`);
+    if (e.myth && (!e.myth.reputation.trim() || !e.myth.finding.trim())) {
+      problems.push(`${at}: myth needs both a reputation and a finding`);
+    }
+    e.doses?.forEach((d, i) => {
+      if (!d.amount.trim() || !d.context.trim()) problems.push(`${at} dose #${i + 1}: incomplete`);
+    });
+    if (e.routes?.some((r) => !r.trim())) problems.push(`${at}: empty route`);
 
     checkRange(`${at} onsetMinutes`, e.timing.onsetMinutes);
     checkRange(`${at} peakMinutes`, e.timing.peakMinutes);

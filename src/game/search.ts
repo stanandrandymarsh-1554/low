@@ -76,6 +76,9 @@ function fieldsFor(entry: Entry, mode: SearchMode): Field[] {
       add(entry.region, 2, entry.region ?? '');
     }
     for (const risk of entry.risks) add(risk, 3, `risk: ${risk}`);
+    for (const route of entry.routes ?? []) add(route, 4, `route: ${route}`);
+    if (entry.myth)
+      add(`myth busted ${entry.myth.reputation}`, 4, `myth: ${entry.myth.reputation}`);
   }
   return fields;
 }

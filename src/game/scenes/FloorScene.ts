@@ -375,7 +375,7 @@ export class FloorScene implements Scene {
     const lines: [string, string][] = [
       ['TYPE', entry.kind === 'botanical' ? 'Botanical' : 'Synthetic'],
       ['AISLE', entry.aisle],
-      ['RUNS', formatHours(entry.timing.totalHours)],
+      ['RUNS', entry.timing.totalHours ? formatHours(entry.timing.totalHours) : '?'],
       ['RATED', TOXICITY_STYLE[entry.toxicity].long.toLowerCase()],
       ['EFFECTS', entry.effects.join(', ')],
     ];
@@ -420,10 +420,10 @@ export class FloorScene implements Scene {
       'Welcome, member! Every tape in this store is an entry',
       'in an index of psychoactive plants and synthetics.',
       '',
-      'This catalogue is for education and harm reduction.',
-      'It is NOT medical advice, and the numbers on the boxes',
-      'are rough ranges, not dosing guidance. Check current,',
-      'reliable sources and your local laws.',
+      'Numbers on the boxes (doses, percentages, timing) are',
+      'figures reported in the sources, often from single',
+      'studies or traditional use. Treat them as reference,',
+      'not advice, and expect them to vary.',
     ];
     body.forEach((line, i) =>
       text(ctx, line, W / 2, r.y + 80 + i * 24, { size: 22, color: C.white, align: 'center' }),

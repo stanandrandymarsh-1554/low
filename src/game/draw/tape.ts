@@ -1,7 +1,7 @@
 import { wrapText } from '../../engine/text';
 import { hashString } from '../aisles';
 import type { Entry } from '../data/types';
-import { C } from '../theme';
+import { C, EVIDENCE_COLOR } from '../theme';
 import { ratingSticker, setFont, text } from './ui';
 
 /** Hue for a tape's cover: greens/teals for botanicals, purples/pinks for synthetics. */
@@ -134,12 +134,20 @@ export function drawTape(
   else molecule(ctx, cx, cy + bandH * 0.3, s);
   ctx.restore();
 
-  // Title.
-  const size = Math.max(12, Math.round(iw * 0.24));
+  // Title: shrink until the longest word fits on a line, so names never break mid-word.
+  let size = Math.max(12, Math.round(iw * 0.24));
+  const longest = entry.name
+    .toUpperCase()
+    .split(/\s+/)
+    .reduce((a, b) => (b.length > a.length ? b : a), '');
   setFont(ctx, size);
+  while (size > 8 && ctx.measureText(longest).width > iw - 4) {
+    size -= 1;
+    setFont(ctx, size);
+  }
   const lines = wrapText(entry.name.toUpperCase(), iw - 4, (s2) => ctx.measureText(s2).width).slice(
     0,
-    2,
+    3,
   );
   const lineH = size * 0.85;
   const top = iy + ih * 0.78 - (lines.length - 1) * lineH;
@@ -153,6 +161,46 @@ export function drawTape(
   ctx.restore();
 
   ratingSticker(ctx, entry.toxicity, ix + iw - iw * 0.15, iy + ih - iw * 0.15, iw * 0.13);
+
+  // Evidence tier sticker (A-D), bottom left.
+  if (entry.evidence) {
+    const bs = iw * 0.24;
+    const bx = ix + iw * 0.15 - bs / 2;
+    const by = iy + ih - iw * 0.15 - bs / 2;
+    ctx.fillStyle = EVIDENCE_COLOR[entry.evidence];
+    ctx.fillRect(bx, by, bs, bs);
+    ctx.strokeStyle = C.black;
+    ctx.lineWidth = Math.max(1, bs * 0.1);
+    ctx.strokeRect(bx, by, bs, bs);
+    text(ctx, entry.evidence, bx + bs / 2, by + bs / 2 + 1, {
+      size: Math.max(6, bs * 0.62),
+      head: true,
+      color: C.black,
+      align: 'center',
+      baseline: 'middle',
+    });
+  }
+
+  // Red stamp for reputations that don't hold up.
+  if (entry.myth) {
+    ctx.save();
+    ctx.translate(cx, iy + ih * 0.5);
+    ctx.rotate(0.28);
+    const sw = iw * 0.78;
+    const sh = Math.max(10, iw * 0.2);
+    ctx.fillStyle = 'rgba(40,0,0,0.55)';
+    ctx.fillRect(-sw / 2, -sh / 2, sw, sh);
+    ctx.strokeStyle = C.red;
+    ctx.lineWidth = Math.max(1.5, iw * 0.03);
+    ctx.strokeRect(-sw / 2, -sh / 2, sw, sh);
+    text(ctx, 'BUSTED', 0, 1, {
+      size: Math.max(9, Math.round(sh * 0.95)),
+      color: C.red,
+      align: 'center',
+      baseline: 'middle',
+    });
+    ctx.restore();
+  }
 
   if (entry.sample) {
     ctx.save();

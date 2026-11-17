@@ -1,4 +1,4 @@
-import type { Toxicity } from './data/types';
+import type { Evidence, Toxicity } from './data/types';
 
 /** The game is laid out on a fixed 960x540 stage, scaled to fit the window. */
 export const W = 960;
@@ -37,4 +37,11 @@ export const TOXICITY_STYLE: Record<Toxicity, { color: string; short: string; lo
   high: { color: C.orange, short: 'HIGH', long: 'HIGH TOXICITY' },
   severe: { color: C.red, short: 'SEV', long: 'SEVERE TOXICITY' },
   unknown: { color: '#a59fc0', short: '?', long: 'TOXICITY UNKNOWN' },
+};
+
+export const EVIDENCE_COLOR: Record<Evidence, string> = {
+  A: C.lime,
+  B: C.cyan,
+  C: C.yellow,
+  D: C.pink,
 };

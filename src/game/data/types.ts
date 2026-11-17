@@ -19,6 +19,22 @@ export const TOXICITY_LEVELS: readonly Toxicity[] = [
   'unknown',
 ];
 
+/**
+ * How strong the evidence is, shown as the A-D sticker on the tape.
+ *  A: controlled human data, or a well-characterised human-active compound
+ *  B: animal / in-vitro pharmacology with an identified active compound
+ *  C: traditional reputation, compound identified, activity unconfirmed
+ *  D: reputation only: investigated and nothing found, or never investigated
+ */
+export type Evidence = 'A' | 'B' | 'C' | 'D';
+
+export const EVIDENCE_TIERS: Record<Evidence, string> = {
+  A: 'Controlled human data, or a well-characterised human-active compound with published binding and functional data.',
+  B: 'Animal or in-vitro pharmacology with an identified active compound.',
+  C: 'Traditional reputation, compound identified, activity unconfirmed.',
+  D: 'Reputation only: investigated and nothing found, or never investigated.',
+};
+
 /** A [min, max] range. Use the same number twice for a single value. */
 export type Range = readonly [min: number, max: number];
 
@@ -27,8 +43,8 @@ export interface Timing {
   onsetMinutes?: Range;
   /** Minutes from dose to peak. */
   peakMinutes?: Range;
-  /** Hours from onset until effects have mostly worn off. */
-  totalHours: Range;
+  /** Hours from onset until effects have mostly worn off. Leave out if the sources don't say. */
+  totalHours?: Range;
   /** Hours of lingering after-effects, if any. */
   afterHours?: Range;
   /** Anything that doesn't fit the numbers, e.g. "varies a lot with route". */
@@ -65,8 +81,15 @@ interface EntryBase {
   risks: string[];
   /** Dangerous combinations. */
   interactions?: string[];
-  /** Legal status notes. Laws vary by country; say where. */
-  legal?: string;
+  /** Doses as reported: traditional use, studies, self-experiments. Say who and in what setting. */
+  doses?: { amount: string; context: string }[];
+  /** Ways it is (or was traditionally) taken. */
+  routes?: string[];
+  evidence?: Evidence;
+  /** What the evidence rating is based on, including caveats. */
+  evidenceNotes?: string;
+  /** For entries whose reputation doesn't hold up: what people say, and what the record shows. */
+  myth?: { reputation: string; finding: string };
   /** Where the info came from (URLs, books, papers). */
   sources?: string[];
   /** Mark placeholder entries so they are easy to find and remove. */

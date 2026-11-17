@@ -1,4 +1,4 @@
-import type { Entry } from './data/types';
+import { EVIDENCE_TIERS, type Entry } from './data/types';
 import { formatHours, formatMinutes, formatPercent } from './timing';
 import { TOXICITY_STYLE } from './theme';
 
@@ -28,6 +28,11 @@ export function buildBackCover(entry: Entry): Block[] {
     add({ type: 'warning', text: 'SAMPLE ENTRY - placeholder to show the format.' });
   }
   add({ type: 'para', text: entry.summary });
+
+  if (entry.myth) {
+    section('REPUTATION', { type: 'para', text: entry.myth.reputation });
+    section('WHAT THE RECORD SHOWS', { type: 'para', text: entry.myth.finding });
+  }
 
   if (entry.kind === 'botanical') {
     if (entry.compounds.length) {
@@ -59,10 +64,22 @@ export function buildBackCover(entry: Entry): Block[] {
   const timing: [string, string][] = [];
   if (t.onsetMinutes) timing.push(['ONSET', formatMinutes(t.onsetMinutes)]);
   if (t.peakMinutes) timing.push(['PEAK', formatMinutes(t.peakMinutes)]);
-  timing.push(['DURATION', formatHours(t.totalHours)]);
+  if (t.totalHours) timing.push(['DURATION', formatHours(t.totalHours)]);
   if (t.afterHours) timing.push(['AFTER-EFFECTS', formatHours(t.afterHours)]);
-  section('RUNNING TIME', { type: 'facts', rows: timing });
+  add({ type: 'heading', text: 'RUNNING TIME' });
+  if (timing.length) add({ type: 'facts', rows: timing });
+  else if (!t.notes) add({ type: 'para', text: 'No timing data in the sources.' });
   if (t.notes) add({ type: 'para', text: t.notes });
+
+  if (entry.doses?.length) {
+    section('REPORTED DOSES', {
+      type: 'bullets',
+      items: entry.doses.map((d) => `${d.amount}: ${d.context}`),
+    });
+  }
+  if (entry.routes?.length) {
+    section('ROUTES', { type: 'bullets', items: entry.routes });
+  }
 
   section(TOXICITY_STYLE[entry.toxicity].long);
   if (entry.toxicityNotes) add({ type: 'para', text: entry.toxicityNotes });
@@ -81,8 +98,15 @@ export function buildBackCover(entry: Entry): Block[] {
     if (entry.history) section('HISTORY', { type: 'para', text: entry.history });
   }
 
+  if (entry.evidence) {
+    section(
+      `EVIDENCE TIER ${entry.evidence}`,
+      { type: 'para', text: EVIDENCE_TIERS[entry.evidence] },
+      ...(entry.evidenceNotes ? [{ type: 'para', text: entry.evidenceNotes } as Block] : []),
+    );
+  }
+
   if (entry.aka?.length) section('ALSO KNOWN AS', { type: 'chips', items: entry.aka });
-  if (entry.legal) section('LEGAL STATUS', { type: 'para', text: entry.legal });
   if (entry.sources?.length) section('SOURCES', { type: 'bullets', items: entry.sources });
 
   return blocks;

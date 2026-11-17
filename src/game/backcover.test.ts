@@ -13,10 +13,26 @@ const headings = (id: string) =>
 
 describe('buildBackCover', () => {
   it('lists a botanical’s compounds with percentages', () => {
-    const table = buildBackCover(get('coffee')).find((b) => b.type === 'table');
-    expect(table).toMatchObject({ rows: [['Caffeine', '1-1.5%', 'seeds'], expect.any(Array)] });
-    expect(headings('coffee')).toContain('ACTIVE COMPOUNDS');
-    expect(headings('coffee')).not.toContain('ORIGIN');
+    const table = buildBackCover(get('syrian-rue')).find((b) => b.type === 'table');
+    expect(table).toMatchObject({ rows: expect.arrayContaining([['Harmine', '4.3%', 'seed']]) });
+    expect(headings('syrian-rue')).toContain('ACTIVE COMPOUNDS');
+    expect(headings('syrian-rue')).not.toContain('ORIGIN');
+  });
+
+  it('includes doses, routes and the evidence tier when an entry has them', () => {
+    expect(headings('salvia-divinorum')).toEqual(
+      expect.arrayContaining(['REPORTED DOSES', 'ROUTES', 'EVIDENCE TIER A']),
+    );
+  });
+
+  it('shows a myth check for busted reputations, and says when timing is unknown', () => {
+    expect(headings('blue-lotus')).toEqual(
+      expect.arrayContaining(['REPUTATION', 'WHAT THE RECORD SHOWS']),
+    );
+    const timing = buildBackCover(get('blue-lotus')).find(
+      (b) => b.type === 'para' && b.text.includes('No timing data'),
+    );
+    expect(timing).toBeDefined();
   });
 
   it('gives a synthetic its origin and timing', () => {

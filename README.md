@@ -3,7 +3,7 @@
 A 90s video rental store where every tape on the shelf is an entry in an index of
 psychoactive plants and synthetics. Browse the aisles, or use the store computer to search by
 name, compound, effect or duration. Pick up a tape to read the back of the box: compounds and
-their percentages, effects, onset and duration, toxicity rating, risks, interactions and origin.
+their percentages, effects, onset and duration, reported doses, traditional routes, toxicity rating, risks, interactions, origin and an A-D evidence tier. Reputations that don't hold up get a BUSTED stamp and their own aisle.
 
 Built with TypeScript, [Vite](https://vite.dev) and the HTML5 Canvas API. To add entries, see
 [DATA.md](DATA.md).

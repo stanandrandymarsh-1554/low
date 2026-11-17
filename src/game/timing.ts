@@ -119,7 +119,8 @@ export function matchesDuration(timing: Timing, q: DurationQuery): boolean {
 
 /** One-line description of how long something lasts, for search results. */
 export function describeTiming(timing: Timing): string {
-  const parts = [`lasts ${formatHours(timing.totalHours)}`];
+  const parts: string[] = [];
+  if (timing.totalHours) parts.push(`lasts ${formatHours(timing.totalHours)}`);
   if (timing.onsetMinutes) parts.push(`onset ${formatMinutes(timing.onsetMinutes)}`);
   return parts.join(', ');
 }

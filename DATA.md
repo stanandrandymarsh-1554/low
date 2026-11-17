@@ -10,6 +10,19 @@ The full field list, with comments, is in `src/game/data/types.ts`. `npm test` c
 
 Entries marked `sample: true` are placeholders. Delete them once real entries are in.
 
+Optional fields that sources often cover:
+
+- `doses`: `[{ amount: '200-500 µg', context: 'who reported it, and in what setting' }]`. Traditional
+  or studied doses as reported, never recommendations.
+- `routes`: the ways it is (or was traditionally) taken, e.g. `['smoked leaf', 'tea']`.
+- `evidence`: tier `'A'`-`'D'` (shown as a coloured letter sticker on the box): A controlled human
+  data or well-characterised human-active compound; B animal/in-vitro with an identified active;
+  C traditional reputation, compound identified, activity unconfirmed; D reputation only.
+  `evidenceNotes` says what the tier rests on.
+- `myth`: `{ reputation, finding }` for reputations that don't hold up. Shows a red BUSTED stamp;
+  shelve these in the `'Busted Myths'` aisle.
+- `timing`: every number is optional. Leave out whatever the sources don't say.
+
 ## Botanical template
 
 ```ts
@@ -42,7 +55,10 @@ Entries marked `sample: true` are placeholders. Delete them once real entries ar
   risks: ['risk one', 'risk two'],
   interactions: ['dangerous combo'],
   history: 'Traditional / historical use.',
-  legal: 'Status, and where.',
+  doses: [{ amount: '1-2 g dried', context: 'traditional use, per Source X' }],
+  routes: ['tea', 'smoked'],
+  evidence: 'B',
+  evidenceNotes: 'What the tier rests on.',
   sources: ['https://...'],
 },
 ```
@@ -70,7 +86,9 @@ Entries marked `sample: true` are placeholders. Delete them once real entries ar
   toxicityNotes: '...',
   risks: ['...'],
   interactions: ['...'],
-  legal: '...',
+  doses: [{ amount: '...', context: '...' }],
+  routes: ['...'],
+  evidence: 'A',
   sources: ['https://...'],
 },
 ```
