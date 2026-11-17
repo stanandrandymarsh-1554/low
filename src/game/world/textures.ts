@@ -4,7 +4,7 @@ import { drawSpecimen } from '../draw/specimen';
 import { fitFont, text } from '../draw/ui';
 import { C, FONT_SIGN } from '../theme';
 
-function makeCanvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
+export function makeCanvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
   const canvas = document.createElement('canvas');
   canvas.width = w;
   canvas.height = h;
@@ -13,7 +13,11 @@ function makeCanvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingCo
   return [canvas, ctx];
 }
 
-function toTexture(canvas: HTMLCanvasElement, anisotropy = 4, repeat = false): CanvasTexture {
+export function toTexture(
+  canvas: HTMLCanvasElement,
+  anisotropy = 4,
+  repeat = false,
+): CanvasTexture {
   const tex = new CanvasTexture(canvas);
   tex.colorSpace = SRGBColorSpace;
   tex.anisotropy = anisotropy;
@@ -22,7 +26,7 @@ function toTexture(canvas: HTMLCanvasElement, anisotropy = 4, repeat = false): C
 }
 
 /** Small deterministic random numbers, so textures look the same every time. */
-function rng(seed: number): () => number {
+export function rng(seed: number): () => number {
   let s = seed;
   return () => {
     s = (s + 0x6d2b79f5) | 0;

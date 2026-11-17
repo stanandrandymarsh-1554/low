@@ -76,6 +76,33 @@ describe.each(layouts)('buildLayout with %s', (_name, entries) => {
   });
 });
 
+describe('rows of shelving', () => {
+  it('keep a walkway between neighbouring units and stay inside the room', () => {
+    for (const entries of [CATALOGUE, bigCatalogue()]) {
+      const l = buildLayout(entries);
+      const sorted = [...l.gondolas].sort((a, b) => a.z - b.z || a.x - b.x);
+      for (let i = 1; i < sorted.length; i++) {
+        const a = sorted[i - 1];
+        const b = sorted[i];
+        if (!a || !b || a.z !== b.z) continue;
+        const gap = b.x - b.length / 2 - (a.x + a.length / 2);
+        // Bays of one aisle touch; separate units have a walkway between them.
+        expect(gap < 0.01 || gap >= 1.2, `gap ${gap}`).toBe(true);
+      }
+      for (const g of l.gondolas) {
+        expect(g.x - g.length / 2).toBeGreaterThan(l.room.minX + 3);
+        expect(g.x + g.length / 2).toBeLessThan(l.room.maxX - 3);
+      }
+    }
+  });
+
+  it('fills the middle of the store with several units per row', () => {
+    const l = buildLayout(CATALOGUE);
+    const rows = new Set(l.gondolas.map((g) => g.z.toFixed(2)));
+    expect(l.gondolas.length).toBeGreaterThan(rows.size);
+  });
+});
+
 describe('buildLayout scaling', () => {
   it('grows the store as aisles and figures are added', () => {
     const small = buildLayout(CATALOGUE.slice(0, 2));

@@ -14,6 +14,7 @@ import {
 } from '../draw/hud';
 import { inRect, type Controls, type Scene } from '../scene';
 import { buildLayout, nearestAisle, type Layout } from '../store/layout';
+import { Crowd } from '../store/npc';
 import { PLAYER_RADIUS, RUN_SPEED, WALK_SPEED } from '../store/scale';
 import { H, W } from '../theme';
 import { StoreWorld, type Pick } from '../world/StoreWorld';
@@ -30,6 +31,7 @@ export class StoreScene implements Scene {
   readonly layout: Layout;
   private readonly world: StoreWorld;
   private readonly body: FirstPersonBody;
+  private readonly crowd: Crowd;
   private hover: Pick | null = null;
   private notice = true;
   private noticeHover = false;
@@ -56,6 +58,8 @@ export class StoreScene implements Scene {
       },
       { x: this.layout.spawn.x, z: this.layout.spawn.z, yaw: this.layout.spawn.yaw, pitch: 0 },
     );
+    this.crowd = new Crowd(this.layout);
+    this.world.setCrowd(this.crowd);
     this.world.setCamera(this.body.pose);
     this.world.updateModels(this.layout.spawn.x, this.layout.spawn.z, 999);
   }
@@ -106,7 +110,9 @@ export class StoreScene implements Scene {
       lookX: dx,
       lookY: dy,
     };
-    this.body.step(dt, input, this.world.colliders);
+    this.world.snapshotPeople();
+    this.crowd.update(dt, this.body.pose);
+    this.body.step(dt, input, [...this.world.colliders, ...this.crowd.boxes()]);
     const pose = this.body.pose;
     this.world.setCamera(pose);
     this.world.updateModels(pose.x, pose.z);
@@ -135,7 +141,7 @@ export class StoreScene implements Scene {
   /** Draws the 3D store, then the HUD, in real screen pixels. */
   renderScreen(ctx: CanvasRenderingContext2D, width: number, height: number, alpha: number): void {
     this.world.setCamera(this.body.poseAt(alpha));
-    this.world.render(width, height);
+    this.world.render(width, height, alpha, this.t);
     if (this.paused || this.notice) return;
 
     // Lay the HUD out on a virtual screen at least as big as the 960x540 stage.
@@ -158,6 +164,7 @@ export class StoreScene implements Scene {
       const x = Math.min(Math.max(cx + 28, 8), vw - w - 8);
       const y = Math.min(Math.max(cy - h / 2, 8), vh - h - 48);
       if (this.hover.kind === 'item') drawTapeTooltip(ctx, this.hover.entry, x, y);
+      else if (this.hover.clerk) drawPrompt(ctx, x, y, 'THE CLERK', 'or click: ask for help');
       else drawPrompt(ctx, x, y, 'CATALOGUE SEARCH', 'or click: use the computer');
     }
 
