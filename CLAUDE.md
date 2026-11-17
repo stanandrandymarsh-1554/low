@@ -10,7 +10,7 @@ Web game in TypeScript + Vite. The store is 3D (three.js, on `<canvas id="world"
 - Static assets go in `public/`.
 - The game is Low Botanica, a 90s video store that indexes psychoactive plants and synthetics. Catalogue data lives in `src/game/data/` (format in `DATA.md`); keep entries factual and cite sources.
 - Scenes draw on a fixed 960x540 stage (`theme.ts` W/H); `Game` scales it to the window.
-- The store is built in metres at real-world sizes (`src/game/store/scale.ts`: 1.65 m eyes, 19 cm tapes, 2 m aisles). Don't scale things to look good; fix the numbers in `scale.ts`.
+- The store is built in metres at real-world sizes (`src/game/store/scale.ts`: 1.65 m eyes, 15 x 20 cm figures, 2 m aisles). Don't scale things to look good; fix the numbers in `scale.ts`.
 - `store/layout.ts` is pure (no DOM, no three.js) and decides where everything goes; it must scale from a handful of entries to hundreds. `world/` only turns a layout into meshes.
-- Tape covers are drawn into textures lazily when you are near them (`StoreWorld.updateCovers`), so keep per-tape work cheap.
+- Shelf items are voxel figures (`src/game/voxel/`, a 12x16x12 grid; pure and tested). The 3D store sculpts each one lazily when you are near it (`StoreWorld.updateModels`), and the same grid is drawn isometrically for posters and the full sheet (`draw/voxel.ts`, `draw/specimen.ts`). Every entry needs a look in `voxel/looks.ts`; a test enforces it. Keep per-figure work cheap.
 - In `npm run dev`, `window.__low.teleport(x, z, yaw, pitch)` moves the camera, for screenshots and tests. The `window.__low` hook is compiled out of production builds.

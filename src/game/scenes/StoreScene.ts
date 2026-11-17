@@ -57,14 +57,14 @@ export class StoreScene implements Scene {
       { x: this.layout.spawn.x, z: this.layout.spawn.z, yaw: this.layout.spawn.yaw, pitch: 0 },
     );
     this.world.setCamera(this.body.pose);
-    this.world.updateCovers(this.layout.spawn.x, this.layout.spawn.z, 999);
+    this.world.updateModels(this.layout.spawn.x, this.layout.spawn.z, 999);
   }
 
   /** Moves the player somewhere else instantly (used by the dev-only debug hook). */
   teleport(x: number, z: number, yaw: number, pitch = 0): void {
     this.body.place({ x, z, yaw, pitch });
     this.world.setCamera(this.body.pose);
-    this.world.updateCovers(x, z, 999);
+    this.world.updateModels(x, z, 999);
     this.notice = false;
   }
 
@@ -109,7 +109,7 @@ export class StoreScene implements Scene {
     this.body.step(dt, input, this.world.colliders);
     const pose = this.body.pose;
     this.world.setCamera(pose);
-    this.world.updateCovers(pose.x, pose.z);
+    this.world.updateModels(pose.x, pose.z);
 
     // Aim: the screen centre while the mouse is locked, otherwise wherever the cursor is.
     if (look.locked) this.hover = this.world.pick(0, 0);
@@ -125,7 +125,7 @@ export class StoreScene implements Scene {
 
     const use = keys.wasPressed('KeyE', 'Enter') || (mouse.clicked && this.hover !== null);
     if (this.hover && use) {
-      if (this.hover.kind === 'tape') this.openTape(this.hover.entry);
+      if (this.hover.kind === 'item') this.openTape(this.hover.entry);
       else this.openSearch();
     } else if (keys.wasPressed('Slash', 'KeyF')) {
       this.openSearch();
@@ -152,12 +152,12 @@ export class StoreScene implements Scene {
     if (locked) drawCrosshair(ctx, cx, cy, this.hover !== null);
 
     if (this.hover && (locked || pixel.inside)) {
-      const tip = this.hover.kind === 'tape';
+      const tip = this.hover.kind === 'item';
       const w = tip ? TOOLTIP_W : 320;
       const h = tip ? TOOLTIP_H : 70;
       const x = Math.min(Math.max(cx + 28, 8), vw - w - 8);
       const y = Math.min(Math.max(cy - h / 2, 8), vh - h - 48);
-      if (this.hover.kind === 'tape') drawTapeTooltip(ctx, this.hover.entry, x, y);
+      if (this.hover.kind === 'item') drawTapeTooltip(ctx, this.hover.entry, x, y);
       else drawPrompt(ctx, x, y, 'CATALOGUE SEARCH', 'or click: use the computer');
     }
 
