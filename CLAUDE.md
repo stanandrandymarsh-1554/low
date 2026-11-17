@@ -8,3 +8,5 @@ Web game in TypeScript + Vite, drawing to a 2D canvas. No game engine/framework 
 - Draw in CSS pixels; `createViewport` handles devicePixelRatio scaling.
 - Put tests next to the code as `*.test.ts`. Keep logic testable without a DOM where possible.
 - Static assets go in `public/`.
+- The game is Low Botanica, a 90s video store that indexes psychoactive plants and synthetics. Catalogue data lives in `src/game/data/` (format in `DATA.md`); keep entries factual and cite sources.
+- Scenes draw on a fixed 960x540 stage (`theme.ts` W/H); `Game` scales it to the window.

@@ -16,7 +16,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "build:single": "tsc --noEmit && vite build --config vite.single.config.ts && node -e \"require('fs').renameSync('dist-single/index.html','dist-single/low-botanica.html')\""
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -26,6 +27,11 @@
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.72.2",
     "vite": "^8.3.7",
+    "vite-plugin-singlefile": "^2.3.4",
     "vitest": "^5.1.0"
+  },
+  "dependencies": {
+    "@fontsource/press-start-2p": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0"
   }
 }

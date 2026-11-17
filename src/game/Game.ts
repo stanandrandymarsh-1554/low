@@ -1,65 +1,111 @@
 import type { Viewport } from '../engine/canvas';
 import type { Input } from '../engine/input';
-import { clamp, lerp } from '../engine/math';
-
-const PLAYER_SIZE = 32;
-const PLAYER_SPEED = 300; // CSS pixels per second
+import type { Pointer } from '../engine/pointer';
+import type { TextField } from '../engine/textfield';
+import { CATALOGUE } from './data';
+import type { Entry } from './data/types';
+import type { Controls, Scene, Stage } from './scene';
+import { FloorScene } from './scenes/FloorScene';
+import { TapeScene } from './scenes/TapeScene';
+import { TerminalScene } from './scenes/TerminalScene';
+import { H, W } from './theme';
 
 /**
- * Placeholder game: a square you move with WASD / arrow keys.
- * Replace this with the real game.
+ * Low Botanica: a 90s video store where every tape is an entry in an index of
+ * psychoactive plants and synthetics. Holds a stack of scenes (floor, search
+ * terminal, tape details) and scales the fixed 960x540 stage to fit the window.
  */
-export class Game {
-  private x = 0;
-  private y = 0;
-  private prevX = 0;
-  private prevY = 0;
-  private started = false;
+export class Game implements Stage {
+  private readonly scenes: Scene[] = [];
+  private readonly controls: Controls;
+  private scale = 1;
+  private offsetX = 0;
+  private offsetY = 0;
+  private lastMouse = { x: -1, y: -1 };
 
   constructor(
     private readonly view: Viewport,
-    private readonly input: Input,
-  ) {}
+    input: Input,
+    private readonly pointer: Pointer,
+    text: TextField,
+    entries: readonly Entry[] = CATALOGUE,
+  ) {
+    this.controls = {
+      keys: input,
+      text,
+      cursor: 'default',
+      mouse: { x: 0, y: 0, inside: false, moved: false, clicked: false, wheel: 0 },
+    };
 
-  update(dt: number): void {
-    const { width, height } = this.view;
-    if (!this.started) {
-      this.x = this.prevX = width / 2;
-      this.y = this.prevY = height / 2;
-      this.started = true;
-    }
-
-    this.prevX = this.x;
-    this.prevY = this.y;
-
-    let dx = 0;
-    let dy = 0;
-    if (this.input.isDown('ArrowLeft', 'KeyA')) dx -= 1;
-    if (this.input.isDown('ArrowRight', 'KeyD')) dx += 1;
-    if (this.input.isDown('ArrowUp', 'KeyW')) dy -= 1;
-    if (this.input.isDown('ArrowDown', 'KeyS')) dy += 1;
-    const len = Math.hypot(dx, dy) || 1;
-
-    const half = PLAYER_SIZE / 2;
-    this.x = clamp(this.x + (dx / len) * PLAYER_SPEED * dt, half, width - half);
-    this.y = clamp(this.y + (dy / len) * PLAYER_SPEED * dt, half, height - half);
-
-    this.input.endFrame();
+    const openTape = (entry: Entry) =>
+      this.push(new TapeScene(entry, this.controls, () => this.pop()));
+    const terminal = new TerminalScene(entries, this.controls, () => this.pop(), openTape);
+    this.push(new FloorScene(entries, this.controls, () => this.push(terminal), openTape));
   }
 
-  render(alpha: number): void {
-    const { ctx, width, height } = this.view;
+  push(scene: Scene): void {
+    this.scenes.at(-1)?.pause?.();
+    this.scenes.push(scene);
+    scene.resume?.();
+  }
 
-    ctx.fillStyle = '#1b1d24';
+  pop(): void {
+    if (this.scenes.length <= 1) return;
+    this.scenes.pop()?.pause?.();
+    this.scenes.at(-1)?.resume?.();
+  }
+
+  private layout(): void {
+    const { width, height } = this.view;
+    this.scale = Math.min(width / W, height / H) || 1;
+    this.offsetX = (width - W * this.scale) / 2;
+    this.offsetY = (height - H * this.scale) / 2;
+  }
+
+  update(dt: number): void {
+    this.layout();
+    const p = this.pointer;
+    const mouse = this.controls.mouse;
+    mouse.x = (p.x - this.offsetX) / this.scale;
+    mouse.y = (p.y - this.offsetY) / this.scale;
+    mouse.inside = p.inside;
+    mouse.moved = mouse.x !== this.lastMouse.x || mouse.y !== this.lastMouse.y;
+    mouse.clicked = p.wasClicked();
+    mouse.wheel = p.wheelDelta();
+    if (!p.inside) mouse.x = mouse.y = -1;
+    this.lastMouse = { x: mouse.x, y: mouse.y };
+
+    // The scene may set this while updating.
+    this.controls.cursor = 'default';
+    // A pushed scene starts on the next update, so a key press isn't handled twice.
+    this.scenes.at(-1)?.update(dt);
+    p.setCursor(this.controls.cursor);
+
+    this.controls.keys.endFrame();
+    p.endFrame();
+  }
+
+  render(): void {
+    const { ctx, width, height } = this.view;
+    this.layout();
+    ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
 
-    const x = lerp(this.prevX, this.x, alpha);
-    const y = lerp(this.prevY, this.y, alpha);
-    ctx.fillStyle = '#f5c542';
-    ctx.fillRect(x - PLAYER_SIZE / 2, y - PLAYER_SIZE / 2, PLAYER_SIZE, PLAYER_SIZE);
+    // Draw from the top-most non-overlay scene upward.
+    let from = this.scenes.length - 1;
+    while (from > 0 && this.scenes[from]?.overlay) from--;
 
-    ctx.fillStyle = '#8a8f9c';
-    ctx.font = '14px system-ui, sans-serif';
-    ctx.fillText('WASD / arrow keys to move', 16, 28);
+    ctx.save();
+    ctx.translate(this.offsetX, this.offsetY);
+    ctx.scale(this.scale, this.scale);
+    ctx.beginPath();
+    ctx.rect(0, 0, W, H);
+    ctx.clip();
+    for (const scene of this.scenes.slice(from)) {
+      ctx.save();
+      scene.render(ctx);
+      ctx.restore();
+    }
+    ctx.restore();
   }
 }

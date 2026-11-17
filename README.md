@@ -1,6 +1,25 @@
-# Low
+# Low Botanica
 
-A web-based game built with TypeScript, [Vite](https://vite.dev) and the HTML5 Canvas API.
+A 90s video rental store where every tape on the shelf is an entry in an index of
+psychoactive plants and synthetics. Browse the aisles, or use the store computer to search by
+name, compound, effect or duration. Pick up a tape to read the back of the box: compounds and
+their percentages, effects, onset and duration, reported doses, traditional routes, toxicity rating, risks, interactions, origin and an A-D evidence tier. Reputations that don't hold up get a BUSTED stamp and their own aisle.
+
+Built with TypeScript, [Vite](https://vite.dev) and the HTML5 Canvas API. To add entries, see
+[DATA.md](DATA.md).
+
+## Controls
+
+| Where           | Keys                                                                   |
+| --------------- | ---------------------------------------------------------------------- |
+| Shop floor      | Arrows/WASD browse, Q/E or [ ] change aisle, Enter pick up, / search   |
+| Search computer | Type to search, Tab change search type, arrows select, Enter view, Esc |
+| Tape            | Arrows / wheel scroll, Esc put it back                                 |
+
+Everything also works with the mouse.
+
+Duration search understands `short` (<2h), `medium` (2-6h), `long` (6-16h), `very long`, `4h`,
+`2-3 hours`, `under 90m`, `over 8h` and `onset under 30m`.
 
 ## Getting started
 
@@ -29,17 +48,29 @@ Then open the URL Vite prints (usually http://localhost:5173). Edits reload inst
 
 ```
 index.html          Page shell with the <canvas id="game">
-public/             Static assets (images, sounds, fonts), served as-is from /
+DATA.md             How to add plants and compounds
+public/             Static assets (images, sounds), served as-is from /
 src/
   main.ts           Entry point: wires the canvas, input and loop to the game
   style.css         Full-screen canvas styling
   engine/           Reusable, game-agnostic pieces
     loop.ts         Fixed-timestep update loop + render with interpolation
     input.ts        Keyboard state (isDown / wasPressed)
+    pointer.ts      Mouse/touch state (position, clicks, wheel)
+    textfield.ts    Text entry via a hidden <input> (works with phone keyboards)
+    text.ts         Word wrapping and truncation
     canvas.ts       High-DPI canvas that tracks its size
     math.ts         Small math helpers
   game/
-    Game.ts         The game itself — currently a placeholder square to move around
+    Game.ts         Scene stack; scales the 960x540 stage to the window
+    data/           The catalogue: types, botanicals, synthetics, validation
+    search.ts       Search by name / compound / effect / duration
+    timing.ts       Duration formatting and duration-query parsing
+    aisles.ts       Groups entries into aisles
+    backcover.ts    What goes on the back of a tape box
+    theme.ts        Stage size, palette, fonts, toxicity colours
+    draw/           Tape box art and UI drawing helpers
+    scenes/         FloorScene (shelves), TerminalScene (search), TapeScene (details)
 ```
 
 Tests live next to the code they cover as `*.test.ts`.
@@ -52,6 +83,9 @@ animation frame; `alpha` is how far we are between two updates and can be used t
 interpolate positions for smooth motion (see `Game.render`).
 
 ## Deploying
+
+Pushes to `main` are published automatically to GitHub Pages by `.github/workflows/deploy.yml`
+(one-time setup: repo Settings → Pages → Source: GitHub Actions).
 
 `npm run build` produces a fully static site in `dist/` with relative asset paths, so
 it can be hosted on GitHub Pages, Netlify, itch.io, or any static file host.
