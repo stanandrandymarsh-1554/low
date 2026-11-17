@@ -1,6 +1,7 @@
 import type { Input } from '../engine/input';
 import type { MouseLook } from '../engine/mouselook';
 import type { TextField } from '../engine/textfield';
+import type { TouchControls } from '../engine/touch';
 
 /** Pointer state in stage coordinates (see theme W/H). */
 export interface Mouse {
@@ -11,6 +12,8 @@ export interface Mouse {
   moved: boolean;
   clicked: boolean;
   wheel: number;
+  /** Finger drag since the last update, in stage units (positive = down). */
+  drag: number;
 }
 
 export interface Controls {
@@ -22,6 +25,8 @@ export interface Controls {
   /** Window size in CSS pixels. */
   view: { width: number; height: number };
   look: MouseLook;
+  /** Thumb-stick, drag-to-look and buttons for phones. */
+  touch: TouchControls;
   text: TextField;
   /** Set during update to change the mouse cursor, e.g. 'pointer' over buttons. */
   cursor: string;

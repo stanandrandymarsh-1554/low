@@ -21,7 +21,9 @@ export function createGlView(canvas: HTMLCanvasElement): GlView {
     const rect = canvas.getBoundingClientRect();
     view.width = rect.width;
     view.height = rect.height;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // Phones have very dense screens; cap the ratio so the 3D view stays smooth.
+    const cap = window.matchMedia?.('(pointer: coarse)').matches ? 1.5 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cap));
     renderer.setSize(rect.width, rect.height, false);
   };
   new ResizeObserver(resize).observe(canvas);

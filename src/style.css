@@ -4,6 +4,12 @@ body {
   height: 100%;
   background: #0b0618;
   overflow: hidden;
+  /* No pull-to-refresh, text selection, callouts or tap highlights while playing. */
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* The 3D store is drawn on #world; #game sits on top and holds the HUD and 2D screens. */
@@ -14,6 +20,14 @@ body {
   display: block;
   width: 100vw;
   height: 100vh;
+}
+
+/* On phones 100vh includes the hidden address bar; the dynamic unit is the visible height. */
+@supports (height: 100dvh) {
+  #world,
+  #game {
+    height: 100dvh;
+  }
 }
 
 #game {

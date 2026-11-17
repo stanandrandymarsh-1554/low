@@ -8,6 +8,7 @@ import { startLoop } from './engine/loop';
 import { MouseLook } from './engine/mouselook';
 import { Pointer } from './engine/pointer';
 import { TextField } from './engine/textfield';
+import { TouchControls } from './engine/touch';
 import { Game } from './game/Game';
 
 /** Tape covers are drawn into textures, so the pixel fonts must be ready first. */
@@ -42,6 +43,7 @@ async function main(): Promise<void> {
     new Pointer(overlay),
     new TextField(overlay),
     new MouseLook(overlay),
+    new TouchControls(overlay),
     gl,
   );
 

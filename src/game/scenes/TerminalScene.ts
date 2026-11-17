@@ -31,6 +31,7 @@ export class TerminalScene implements Scene {
   private hoverRow = -1;
   private hoverMode = -1;
   private hoverExit = false;
+  private dragged = 0;
 
   constructor(
     private readonly entries: readonly Entry[],
@@ -101,13 +102,25 @@ export class TerminalScene implements Scene {
     if (keys.wasPressed('ArrowUp')) this.sel--;
     if (keys.wasPressed('PageDown')) this.sel += VISIBLE;
     if (keys.wasPressed('PageUp')) this.sel -= VISIBLE;
-    if (mouse.wheel) this.scroll += Math.sign(mouse.wheel);
+    // The wheel scrolls a row at a time; so does dragging a finger up the list.
+    let scrolled = Math.sign(mouse.wheel);
+    this.dragged += mouse.drag;
+    const rows = Math.trunc(this.dragged / LINE);
+    if (rows) {
+      scrolled -= rows;
+      this.dragged -= rows * LINE;
+    }
+    this.scroll += scrolled;
+    this.scroll = Math.max(0, Math.min(this.scroll, n - VISIBLE));
     this.sel = Math.max(0, Math.min(this.sel, n - 1));
-    if (!mouse.wheel) {
+    if (scrolled) {
+      // Keep the highlight on screen rather than snapping the list back to it.
+      this.sel = Math.max(this.scroll, Math.min(this.sel, this.scroll + VISIBLE - 1, n - 1));
+    } else {
       if (this.sel < this.scroll) this.scroll = this.sel;
       if (this.sel >= this.scroll + VISIBLE) this.scroll = this.sel - VISIBLE + 1;
+      this.scroll = Math.max(0, Math.min(this.scroll, n - VISIBLE));
     }
-    this.scroll = Math.max(0, Math.min(this.scroll, n - VISIBLE));
 
     this.hoverRow = -1;
     for (let i = 0; i < Math.min(VISIBLE, n - this.scroll); i++) {
@@ -193,7 +206,7 @@ export class TerminalScene implements Scene {
       ctx.fillRect(ex.x, ex.y, ex.w, ex.h);
     }
     ctx.strokeRect(ex.x + 0.5, ex.y + 0.5, ex.w - 1, ex.h - 1);
-    text(ctx, '[ESC] EXIT', ex.x + ex.w / 2, ex.y + 19, {
+    text(ctx, this.controls.touch.active ? 'EXIT' : '[ESC] EXIT', ex.x + ex.w / 2, ex.y + 19, {
       ...dim,
       color: this.hoverExit ? C.crtBg : C.crt,
       align: 'center',
@@ -214,7 +227,9 @@ export class TerminalScene implements Scene {
         align: 'center',
       });
     });
-    text(ctx, 'TAB: change search type', right, SCREEN.y + 124, { ...dim, align: 'right' });
+    if (!this.controls.touch.active) {
+      text(ctx, 'TAB: change search type', right, SCREEN.y + 124, { ...dim, align: 'right' });
+    }
 
     // Query line.
     const q = this.controls.text.value.toUpperCase();
@@ -229,7 +244,10 @@ export class TerminalScene implements Scene {
       ctx.fillStyle = C.crt;
       ctx.fillRect(cx, qy - 16, 10, 19);
     }
-    if (!q) text(ctx, HINTS[this.mode], qx + 18, qy, dim);
+    if (!q) {
+      const tapToType = this.controls.touch.active && !this.controls.text.focused;
+      text(ctx, tapToType ? 'TAP ANYWHERE TO TYPE' : HINTS[this.mode], qx + 18, qy, dim);
+    }
     this.rule(ctx, qy + 18);
 
     // Results.
@@ -286,6 +304,9 @@ export class TerminalScene implements Scene {
     this.rule(ctx, footY - 26);
     const shown = n ? `${this.scroll + 1}-${Math.min(n, this.scroll + VISIBLE)} OF ${n}` : '0';
     text(ctx, `${n} TITLE${n === 1 ? '' : 'S'} FOUND   [${shown}]`, x, footY, g);
-    text(ctx, '↑↓ SELECT   ENTER VIEW TAPE', right, footY, { ...g, align: 'right' });
+    const keys = this.controls.touch.active
+      ? 'DRAG TO SCROLL   TAP A TITLE'
+      : '↑↓ SELECT   ENTER VIEW TAPE';
+    text(ctx, keys, right, footY, { ...g, align: 'right' });
   }
 }

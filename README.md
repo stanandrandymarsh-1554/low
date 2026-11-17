@@ -23,6 +23,11 @@ and the HTML5 Canvas API for the HUD and menu screens. To add entries, see
 | Search computer | Type to search, Tab change search type, arrows select, Enter view, Esc |
 | Full sheet      | Arrows / wheel scroll, Esc put it back                                 |
 
+On a phone or tablet (held sideways) there is a thumb-stick on the left to walk, drag anywhere
+else to look, and tap a figure to open it. The big OPEN button opens whatever is under the
+crosshair, the magnifier opens search, and the square button goes fullscreen where the browser
+allows it. On iPhone, "Add to Home Screen" gives a full-screen game.
+
 Esc releases the mouse. Without capturing the mouse you can still aim with the cursor, and
 click a figure to open it.
 
@@ -72,6 +77,7 @@ src/
     textfield.ts    Text entry via a hidden <input> (works with phone keyboards)
     text.ts         Word wrapping and truncation
     canvas.ts       High-DPI 2D canvas that tracks its size
+    touch.ts        Thumb-stick, drag-to-look, taps and buttons for phones
     math.ts         Small math helpers
   game/
     Game.ts         Scene stack; scales the 960x540 stage used by the 2D screens
