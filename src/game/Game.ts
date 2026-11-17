@@ -1,19 +1,22 @@
 import type { Viewport } from '../engine/canvas';
+import type { GlView } from '../engine/gl';
 import type { Input } from '../engine/input';
+import type { MouseLook } from '../engine/mouselook';
 import type { Pointer } from '../engine/pointer';
 import type { TextField } from '../engine/textfield';
 import { CATALOGUE } from './data';
 import type { Entry } from './data/types';
 import type { Controls, Scene, Stage } from './scene';
-import { FloorScene } from './scenes/FloorScene';
+import { StoreScene } from './scenes/StoreScene';
 import { TapeScene } from './scenes/TapeScene';
 import { TerminalScene } from './scenes/TerminalScene';
 import { H, W } from './theme';
 
 /**
- * Low Botanica: a 90s video store where every tape is an entry in an index of
- * psychoactive plants and synthetics. Holds a stack of scenes (floor, search
- * terminal, tape details) and scales the fixed 960x540 stage to fit the window.
+ * Low Botanica: a 90s video store you walk around in first person. Every tape on the shelves
+ * is an entry in an index of psychoactive plants and synthetics. Holds a stack of scenes
+ * (the store, the search computer, a tape's details) and scales the 960x540 stage used by the
+ * 2D screens to fit the window.
  */
 export class Game implements Stage {
   private readonly scenes: Scene[] = [];
@@ -22,25 +25,37 @@ export class Game implements Stage {
   private offsetX = 0;
   private offsetY = 0;
   private lastMouse = { x: -1, y: -1 };
+  private readonly store: StoreScene;
 
   constructor(
     private readonly view: Viewport,
     input: Input,
     private readonly pointer: Pointer,
     text: TextField,
+    look: MouseLook,
+    gl: GlView,
     entries: readonly Entry[] = CATALOGUE,
   ) {
     this.controls = {
       keys: input,
       text,
+      look,
       cursor: 'default',
       mouse: { x: 0, y: 0, inside: false, moved: false, clicked: false, wheel: 0 },
+      pixel: { x: 0, y: 0, inside: false },
+      view,
     };
 
     const openTape = (entry: Entry) =>
       this.push(new TapeScene(entry, this.controls, () => this.pop()));
     const terminal = new TerminalScene(entries, this.controls, () => this.pop(), openTape);
-    this.push(new FloorScene(entries, this.controls, () => this.push(terminal), openTape));
+    this.store = new StoreScene(entries, this.controls, gl, () => this.push(terminal), openTape);
+    this.push(this.store);
+  }
+
+  /** Dev-only: jump the camera somewhere in the store (see main.ts). */
+  teleport(x: number, z: number, yaw: number, pitch = 0): void {
+    this.store.teleport(x, z, yaw, pitch);
   }
 
   push(scene: Scene): void {
@@ -74,10 +89,12 @@ export class Game implements Stage {
     mouse.wheel = p.wheelDelta();
     if (!p.inside) mouse.x = mouse.y = -1;
     this.lastMouse = { x: mouse.x, y: mouse.y };
+    this.controls.pixel.x = p.x;
+    this.controls.pixel.y = p.y;
+    this.controls.pixel.inside = p.inside;
 
     // The scene may set this while updating.
     this.controls.cursor = 'default';
-    // A pushed scene starts on the next update, so a key press isn't handled twice.
     this.scenes.at(-1)?.update(dt);
     p.setCursor(this.controls.cursor);
 
@@ -85,27 +102,35 @@ export class Game implements Stage {
     p.endFrame();
   }
 
-  render(): void {
+  render(alpha = 1): void {
     const { ctx, width, height } = this.view;
     this.layout();
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, width, height);
 
     // Draw from the top-most non-overlay scene upward.
     let from = this.scenes.length - 1;
     while (from > 0 && this.scenes[from]?.overlay) from--;
 
-    ctx.save();
-    ctx.translate(this.offsetX, this.offsetY);
-    ctx.scale(this.scale, this.scale);
-    ctx.beginPath();
-    ctx.rect(0, 0, W, H);
-    ctx.clip();
+    if (this.scenes[from]?.transparent) {
+      ctx.clearRect(0, 0, width, height);
+    } else {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, width, height);
+    }
+
     for (const scene of this.scenes.slice(from)) {
+      if (scene.renderScreen) {
+        ctx.save();
+        scene.renderScreen(ctx, width, height, alpha);
+        ctx.restore();
+      }
       ctx.save();
+      ctx.translate(this.offsetX, this.offsetY);
+      ctx.scale(this.scale, this.scale);
+      ctx.beginPath();
+      ctx.rect(0, 0, W, H);
+      ctx.clip();
       scene.render(ctx);
       ctx.restore();
     }
-    ctx.restore();
   }
 }

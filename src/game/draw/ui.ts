@@ -18,6 +18,21 @@ export function setFont(ctx: CanvasRenderingContext2D, size: number, head = fals
   ctx.font = `${size}px ${head ? FONT_HEAD : FONT_BODY}`;
 }
 
+/** Largest font size (up to `max`) at which `label` fits within `width`. */
+export function fitFont(
+  ctx: CanvasRenderingContext2D,
+  label: string,
+  family: string,
+  max: number,
+  width: number,
+): number {
+  let size = max;
+  ctx.font = `${size}px ${family}`;
+  const measured = ctx.measureText(label).width;
+  if (measured > width) size = Math.max(10, Math.floor((size * width) / measured));
+  return size;
+}
+
 export function text(
   ctx: CanvasRenderingContext2D,
   s: string,
