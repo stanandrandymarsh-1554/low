@@ -227,3 +227,30 @@ export function drawTape(
   ctx.lineTo(x, y + h * 0.35);
   ctx.fill();
 }
+
+const sprites = new Map<string, HTMLCanvasElement>();
+
+/** Forget cached sprites, e.g. once web fonts have loaded so titles are redrawn. */
+export function clearTapeSprites(): void {
+  sprites.clear();
+}
+
+/**
+ * A tape box pre-rendered to its own canvas, so shelves of dozens of tapes cost one drawImage
+ * each per frame. `scale` is the oversampling (2 keeps it crisp on high-DPI screens).
+ */
+export function tapeSprite(entry: Entry, w: number, h: number, scale = 2): HTMLCanvasElement {
+  const key = `${entry.id}:${w}x${h}:${scale}`;
+  const cached = sprites.get(key);
+  if (cached) return cached;
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(w * scale);
+  canvas.height = Math.round(h * scale);
+  const g = canvas.getContext('2d');
+  if (g) {
+    g.scale(scale, scale);
+    drawTape(g, entry, 0, 0, w, h);
+  }
+  sprites.set(key, canvas);
+  return canvas;
+}

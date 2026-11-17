@@ -5,14 +5,14 @@ import type { TextField } from '../engine/textfield';
 import { CATALOGUE } from './data';
 import type { Entry } from './data/types';
 import type { Controls, Scene, Stage } from './scene';
-import { FloorScene } from './scenes/FloorScene';
+import { StoreScene } from './scenes/StoreScene';
 import { TapeScene } from './scenes/TapeScene';
 import { TerminalScene } from './scenes/TerminalScene';
 import { H, W } from './theme';
 
 /**
  * Low Botanica: a 90s video store where every tape is an entry in an index of
- * psychoactive plants and synthetics. Holds a stack of scenes (floor, search
+ * psychoactive plants and synthetics. Holds a stack of scenes (the walkable store, search
  * terminal, tape details) and scales the fixed 960x540 stage to fit the window.
  */
 export class Game implements Stage {
@@ -40,7 +40,7 @@ export class Game implements Stage {
     const openTape = (entry: Entry) =>
       this.push(new TapeScene(entry, this.controls, () => this.pop()));
     const terminal = new TerminalScene(entries, this.controls, () => this.pop(), openTape);
-    this.push(new FloorScene(entries, this.controls, () => this.push(terminal), openTape));
+    this.push(new StoreScene(entries, this.controls, () => this.push(terminal), openTape));
   }
 
   push(scene: Scene): void {
