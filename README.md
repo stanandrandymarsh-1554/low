@@ -84,5 +84,8 @@ interpolate positions for smooth motion (see `Game.render`).
 
 ## Deploying
 
+Pushes to `main` are published automatically to GitHub Pages by `.github/workflows/deploy.yml`
+(one-time setup: repo Settings → Pages → Source: GitHub Actions).
+
 `npm run build` produces a fully static site in `dist/` with relative asset paths, so
 it can be hosted on GitHub Pages, Netlify, itch.io, or any static file host.
