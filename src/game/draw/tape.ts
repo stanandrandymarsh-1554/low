@@ -4,10 +4,10 @@ import type { Entry } from '../data/types';
 import { C, EVIDENCE_COLOR } from '../theme';
 import { ratingSticker, setFont, text } from './ui';
 
-/** Hue for a tape's cover: greens/teals for botanicals, blues/indigos for synthetics. */
+/** Hue for a tape's cover: greens/teals for botanicals, blues for synthetics. */
 export function tapeHue(entry: Entry): number {
   const h = hashString(entry.id);
-  return entry.kind === 'botanical' ? 70 + (h % 110) : 195 + (h % 80);
+  return entry.kind === 'botanical' ? 70 + (h % 110) : 200 + (h % 40);
 }
 
 function leaf(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: number): void {

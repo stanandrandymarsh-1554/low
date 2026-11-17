@@ -1,6 +1,7 @@
 import type { Botanical } from './types';
 import { MYTHS } from './myths';
 import { MORE } from './botanicals2';
+import { FAMILIAR } from './botanicals3';
 
 const TREE = 'The Target Tree: psychoactive botanicals by receptor (rebuild, 16 Sep 2026)';
 const RANK =
@@ -287,4 +288,4 @@ const CORE: Botanical[] = [
   },
 ];
 
-export const BOTANICALS: Botanical[] = [...CORE, ...MORE, ...MYTHS];
+export const BOTANICALS: Botanical[] = [...CORE, ...MORE, ...FAMILIAR, ...MYTHS];
