@@ -54,7 +54,7 @@ export class TapeScene implements Scene {
     const e = this.entry;
     const hue = tapeHue(e);
 
-    ctx.fillStyle = 'rgba(7,4,15,0.82)';
+    ctx.fillStyle = 'rgba(20,14,9,0.82)';
     ctx.fillRect(0, 0, W, H);
 
     // Clamshell case and printed back cover.
@@ -76,11 +76,11 @@ export class TapeScene implements Scene {
     text(ctx, tox.long, CARD.x + 88, CARD.y + 384, { size: 20, color: tox.color });
     text(ctx, `AISLE: ${e.aisle.toUpperCase()}`, CARD.x + 22, CARD.y + 428, {
       size: 20,
-      color: C.yellow,
+      color: C.gold,
     });
     text(ctx, e.kind === 'botanical' ? 'BOTANICAL' : 'SYNTHETIC', CARD.x + 22, CARD.y + 450, {
       size: 20,
-      color: e.kind === 'botanical' ? C.lime : C.cyan,
+      color: e.kind === 'botanical' ? C.sage : C.teal,
     });
 
     // Title.
@@ -96,7 +96,7 @@ export class TapeScene implements Scene {
       glowSize: 10,
     });
     text(ctx, subtitle(e), tx, CARD.y + 78, { size: 22, color: C.dim });
-    ctx.fillStyle = C.pink;
+    ctx.fillStyle = C.accent;
     ctx.fillRect(tx, CARD.y + 86, BODY.w, 2);
 
     // Scrolling body.
@@ -113,14 +113,14 @@ export class TapeScene implements Scene {
       const barY = BODY.y + (BODY.h - barH) * (this.scroll / (this.contentH - BODY.h));
       ctx.fillStyle = C.faint;
       ctx.fillRect(BODY.x + BODY.w + 8, BODY.y, 4, BODY.h);
-      ctx.fillStyle = C.yellow;
+      ctx.fillStyle = C.gold;
       ctx.fillRect(BODY.x + BODY.w + 8, barY, 4, barH);
     }
 
     const footY = CARD.y + CARD.h - 20;
     const x = keyHint(ctx, BODY.x, footY, '↑↓', 'scroll');
     keyHint(ctx, x, footY, 'ESC', 'put it back');
-    button(ctx, BACK, 'RETURN', this.hoverBack, C.yellow);
+    button(ctx, BACK, 'RETURN', this.hoverBack, C.gold);
   }
 
   /** Draws the blocks and returns their total height. */
@@ -139,11 +139,11 @@ export class TapeScene implements Scene {
       switch (b.type) {
         case 'heading':
           y += 14;
-          text(ctx, b.text, x, y, { size: 10, head: true, color: C.yellow });
+          text(ctx, b.text, x, y, { size: 10, head: true, color: C.gold });
           y += 22;
           break;
         case 'warning':
-          ctx.fillStyle = C.yellow;
+          ctx.fillStyle = C.gold;
           ctx.fillRect(x, y - 16, w, 24);
           text(ctx, b.text, x + 8, y + 1, { size: 20, color: C.black });
           y += 30;
@@ -155,7 +155,7 @@ export class TapeScene implements Scene {
         case 'facts': {
           const labelW = 150;
           for (const [k, v] of b.rows) {
-            text(ctx, k, x, y, { size: 20, color: C.cyan });
+            text(ctx, k, x, y, { size: 20, color: C.teal });
             setFont(ctx, 21);
             for (const line of wrap(v, w - labelW)) {
               text(ctx, line, x + labelW, y, { size: 21, color: C.white });
@@ -167,7 +167,7 @@ export class TapeScene implements Scene {
         }
         case 'bullets':
           for (const item of b.items) {
-            text(ctx, '*', x + 2, y + 2, { size: 21, color: C.pink });
+            text(ctx, '*', x + 2, y + 2, { size: 21, color: C.accent });
             para(item, C.white, 18);
           }
           y += 4;
@@ -181,12 +181,12 @@ export class TapeScene implements Scene {
               cx = x;
               y += 28;
             }
-            ctx.strokeStyle = C.lime;
+            ctx.strokeStyle = C.sage;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.roundRect(cx + 0.5, y - 17.5, cw, 23, 11);
             ctx.stroke();
-            text(ctx, item, cx + 8, y, { size: 20, color: C.lime });
+            text(ctx, item, cx + 8, y, { size: 20, color: C.sage });
             cx += cw + 8;
           }
           y += 30;
@@ -194,7 +194,7 @@ export class TapeScene implements Scene {
         }
         case 'table': {
           const cols = [x, x + w * 0.45, x + w * 0.65];
-          b.head.forEach((h, i) => text(ctx, h, cols[i] ?? x, y, { size: 20, color: C.cyan }));
+          b.head.forEach((h, i) => text(ctx, h, cols[i] ?? x, y, { size: 20, color: C.teal }));
           y += 6;
           ctx.fillStyle = C.faint;
           ctx.fillRect(x, y, w, 1);
@@ -203,7 +203,7 @@ export class TapeScene implements Scene {
             row.forEach((cell, i) =>
               text(ctx, cell, cols[i] ?? x, y, {
                 size: 21,
-                color: i === 1 ? C.yellow : C.white,
+                color: i === 1 ? C.gold : C.white,
               }),
             );
             y += 22;

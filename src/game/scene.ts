@@ -1,4 +1,5 @@
 import type { Input } from '../engine/input';
+import type { MouseLook } from '../engine/mouselook';
 import type { TextField } from '../engine/textfield';
 
 /** Pointer state in stage coordinates (see theme W/H). */
@@ -14,7 +15,13 @@ export interface Mouse {
 
 export interface Controls {
   keys: Input;
+  /** Pointer in stage coordinates (the 960x540 layout used by the 2D screens). */
   mouse: Mouse;
+  /** Pointer in real CSS pixels, for aiming in the 3D view. */
+  pixel: { x: number; y: number; inside: boolean };
+  /** Window size in CSS pixels. */
+  view: { width: number; height: number };
+  look: MouseLook;
   text: TextField;
   /** Set during update to change the mouse cursor, e.g. 'pointer' over buttons. */
   cursor: string;
@@ -23,11 +30,16 @@ export interface Controls {
 export interface Scene {
   /** If true, the scene below is drawn first (for pop-ups). */
   readonly overlay?: boolean;
+  /** If true, the 2D canvas is cleared rather than painted black, so the 3D view shows through. */
+  readonly transparent?: boolean;
   /** Called when this scene becomes the top of the stack. */
   resume?(): void;
   /** Called when another scene covers this one, or it is removed. */
   pause?(): void;
   update(dt: number): void;
+  /** Draws in real screen pixels, before `render`. Used by the 3D store and its HUD. */
+  renderScreen?(ctx: CanvasRenderingContext2D, width: number, height: number, alpha: number): void;
+  /** Draws on the fixed 960x540 stage. */
   render(ctx: CanvasRenderingContext2D): void;
 }
 

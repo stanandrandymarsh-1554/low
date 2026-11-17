@@ -4,10 +4,10 @@ import type { Entry } from '../data/types';
 import { C, EVIDENCE_COLOR } from '../theme';
 import { ratingSticker, setFont, text } from './ui';
 
-/** Hue for a tape's cover: greens/teals for botanicals, purples/pinks for synthetics. */
+/** Hue for a tape's cover: greens/teals for botanicals, blues for synthetics. */
 export function tapeHue(entry: Entry): number {
   const h = hashString(entry.id);
-  return entry.kind === 'botanical' ? 70 + (h % 110) : 200 + (h % 140);
+  return entry.kind === 'botanical' ? 70 + (h % 110) : 200 + (h % 40);
 }
 
 function leaf(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: number): void {
@@ -68,7 +68,7 @@ export function drawTape(
 
   ctx.save();
   if (selected) {
-    ctx.shadowColor = C.yellow;
+    ctx.shadowColor = C.gold;
     ctx.shadowBlur = 14 + Math.sin(t * 5) * 4;
   }
   ctx.fillStyle = C.plastic;
@@ -115,7 +115,7 @@ export function drawTape(
   ctx.fillRect(ix, iy, iw, bandH);
   text(ctx, entry.kind === 'botanical' ? 'BOTANICAL' : 'SYNTHETIC', cx, iy + bandH / 2 + 1, {
     size: Math.max(9, Math.round(bandH * 1.05)),
-    color: entry.kind === 'botanical' ? C.lime : C.cyan,
+    color: entry.kind === 'botanical' ? C.sage : C.teal,
     align: 'center',
     baseline: 'middle',
   });
@@ -206,7 +206,7 @@ export function drawTape(
     ctx.save();
     ctx.translate(ix + iw * 0.2, iy + bandH + iw * 0.14);
     ctx.rotate(-0.35);
-    ctx.fillStyle = C.yellow;
+    ctx.fillStyle = C.gold;
     const sw = iw * 0.5;
     const sh = Math.max(7, iw * 0.16);
     ctx.fillRect(-sw / 2, -sh / 2, sw, sh);

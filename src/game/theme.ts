@@ -6,42 +6,45 @@ export const H = 540;
 
 export const FONT_HEAD = '"Press Start 2P", monospace';
 export const FONT_BODY = 'VT323, monospace';
+/** Condensed capitals, like the black category boards over video-store shelves. */
+export const FONT_SIGN = '"Bebas Neue", Impact, sans-serif';
 
+/**
+ * Warm 90s video-store palette: amber walls, honey wood, dark shelving, cream lettering.
+ * (Names are by role: `accent` is the burnt-orange used for borders and highlights.)
+ */
 export const C = {
-  black: '#07040f',
-  wall: '#1a0f33',
-  wallStripe: '#21143f',
-  pink: '#ff3fa4',
-  cyan: '#38f2ff',
-  yellow: '#ffd23f',
-  lime: '#9bff4a',
-  orange: '#ff8a2a',
-  red: '#ff3b3b',
-  white: '#f4ecff',
-  dim: '#8b7fb0',
-  faint: '#4a3f6e',
-  shelf: '#22307a',
-  shelfEdge: '#4a62d8',
-  shelfShadow: '#0d1240',
-  carpet: '#120a24',
-  crt: '#39ff7a',
-  crtDim: '#1f8f48',
-  crtBg: '#031a0c',
-  plastic: '#0c0a14',
-  card: '#140d26',
+  black: '#14100c',
+  accent: '#e2683b',
+  teal: '#5fb3a8',
+  sage: '#a7c957',
+  gold: '#f2c14e',
+  orange: '#e8892b',
+  red: '#d94a3a',
+  white: '#f6ecd5',
+  dim: '#a39482',
+  faint: '#5b4e42',
+  crt: '#ffb43a',
+  crtDim: '#a8691a',
+  crtBg: '#150c02',
+  plastic: '#0c0a08',
+  card: '#1d1610',
 } as const;
 
+/** Dark, warm panel fill used behind HUD and menu text. */
+export const PANEL = 'rgba(20,14,9,0.88)';
+
 export const TOXICITY_STYLE: Record<Toxicity, { color: string; short: string; long: string }> = {
-  low: { color: '#4be37a', short: 'LOW', long: 'LOW TOXICITY' },
-  moderate: { color: C.yellow, short: 'MOD', long: 'MODERATE TOXICITY' },
+  low: { color: '#7cc866', short: 'LOW', long: 'LOW TOXICITY' },
+  moderate: { color: C.gold, short: 'MOD', long: 'MODERATE TOXICITY' },
   high: { color: C.orange, short: 'HIGH', long: 'HIGH TOXICITY' },
   severe: { color: C.red, short: 'SEV', long: 'SEVERE TOXICITY' },
-  unknown: { color: '#a59fc0', short: '?', long: 'TOXICITY UNKNOWN' },
+  unknown: { color: '#a89f94', short: '?', long: 'TOXICITY UNKNOWN' },
 };
 
 export const EVIDENCE_COLOR: Record<Evidence, string> = {
-  A: C.lime,
-  B: C.cyan,
-  C: C.yellow,
-  D: C.pink,
+  A: C.sage,
+  B: C.teal,
+  C: C.gold,
+  D: C.accent,
 };

@@ -35,13 +35,17 @@ describe('buildBackCover', () => {
     expect(timing).toBeDefined();
   });
 
-  it('gives a synthetic its origin and timing', () => {
-    expect(headings('modafinil')).toEqual(
-      expect.arrayContaining(['ORIGIN', 'EFFECTS', 'RUNNING TIME', 'LOW TOXICITY']),
+  it('gives a synthetic its origin, and shows timing only when the sources have it', () => {
+    expect(headings('lsd')).toEqual(
+      expect.arrayContaining(['ORIGIN', 'EFFECTS', 'RUNNING TIME', 'MODERATE TOXICITY']),
     );
-    const timing = buildBackCover(get('modafinil')).find(
+    const salvia = buildBackCover(get('salvia-divinorum')).find(
       (b) => b.type === 'facts' && b.rows.some(([k]) => k === 'DURATION'),
     );
-    expect(timing).toMatchObject({ rows: expect.arrayContaining([['DURATION', '10-15 h']]) });
+    expect(salvia).toBeDefined();
+    const lsd = buildBackCover(get('lsd')).find(
+      (b) => b.type === 'facts' && b.rows.some(([k]) => k === 'DURATION'),
+    );
+    expect(lsd).toBeUndefined();
   });
 });

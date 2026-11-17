@@ -2,13 +2,34 @@ html,
 body {
   margin: 0;
   height: 100%;
-  background: #111;
+  background: #0b0618;
   overflow: hidden;
 }
 
+/* The 3D store is drawn on #world; #game sits on top and holds the HUD and 2D screens. */
+#world,
 #game {
+  position: fixed;
+  inset: 0;
   display: block;
   width: 100vw;
   height: 100vh;
+}
+
+#game {
   touch-action: none;
+}
+
+.fatal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 24px;
+  color: #f4ecff;
+  font:
+    20px/1.4 system-ui,
+    sans-serif;
+  text-align: center;
 }

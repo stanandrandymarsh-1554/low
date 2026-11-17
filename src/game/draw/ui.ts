@@ -12,10 +12,27 @@ export interface TextStyle {
   /** Neon glow colour. */
   glow?: string;
   glowSize?: number;
+  /** A CSS font family, instead of the default heading/body fonts. */
+  font?: string;
 }
 
 export function setFont(ctx: CanvasRenderingContext2D, size: number, head = false): void {
   ctx.font = `${size}px ${head ? FONT_HEAD : FONT_BODY}`;
+}
+
+/** Largest font size (up to `max`) at which `label` fits within `width`. */
+export function fitFont(
+  ctx: CanvasRenderingContext2D,
+  label: string,
+  family: string,
+  max: number,
+  width: number,
+): number {
+  let size = max;
+  ctx.font = `${size}px ${family}`;
+  const measured = ctx.measureText(label).width;
+  if (measured > width) size = Math.max(10, Math.floor((size * width) / measured));
+  return size;
 }
 
 export function text(
@@ -32,7 +49,8 @@ export function text(
     align = 'left',
     baseline = 'alphabetic',
   } = style;
-  setFont(ctx, size, head);
+  if (style.font) ctx.font = `${size}px ${style.font}`;
+  else setFont(ctx, size, head);
   ctx.textAlign = align;
   ctx.textBaseline = baseline;
   ctx.fillStyle = color;
@@ -82,7 +100,7 @@ export function button(
   r: Rect,
   label: string,
   hovered: boolean,
-  color: string = C.cyan,
+  color: string = C.teal,
 ): void {
   ctx.fillStyle = hovered ? color : C.black;
   ctx.strokeStyle = color;
