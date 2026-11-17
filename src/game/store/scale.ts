@@ -42,12 +42,16 @@ export const STORE = {
   ceiling: 3.1,
   /** Clear walking space between two facing gondolas. */
   aisleWidth: 2.0,
-  /** Space behind the first gondola, and in front of the last (counter and door). */
-  backLane: 2.4,
-  frontLane: 5.2,
-  /** Space either side of the longest gondola. */
-  sideLane: 2.0,
-  minWidth: 10,
+  /** Space behind the first row of shelving, and in front of the last (counter and door). */
+  backLane: 3.2,
+  frontLane: 6.0,
+  /** Widest a row of shelving units grows before a new row starts. */
+  fieldWidth: 9.5,
+  /** Walking space between two shelving units in the same row. */
+  unitGap: 1.6,
+  /** Width kept free on each side of the shelving for the lounge and the snack corner. */
+  sideZone: 4.4,
+  minWidth: 18,
   /** Height of the middle of the hanging aisle signs. */
   signY: 2.35,
 } as const;

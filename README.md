@@ -1,6 +1,7 @@
 # Low Botanica
 
-A 90s video rental store you walk around in first person. Every little retro figure on the shelves
+A 90s video rental store you walk around in first person, with a lounge, a snack corner, a
+clerk at the counter and a few shoppers who browse the shelves and sit on the sofas. Every little retro figure on the shelves
 is an entry in an index of psychoactive plants and synthetics. Plants are shown as the plant
 (a mushroom, a cactus, a poppy pod, a root) and lab-made things as the isolated compound
 (crystals, powder, tablets, a vial, or a molecule). Aim at one for its name and a quick summary,
@@ -75,8 +76,11 @@ src/
   game/
     Game.ts         Scene stack; scales the 960x540 stage used by the 2D screens
     data/           The catalogue: types, botanicals, synthetics, validation
-    store/          scale.ts (real-world sizes, in metres) and layout.ts (where everything goes)
-    world/          The 3D store: StoreWorld (three.js scene) and procedural textures
+    store/          scale.ts (real-world sizes, in metres), layout.ts (shelving), props.ts
+                    (lounge, snack corner, displays), nav.ts + npc.ts (walkable grid, the clerk
+                    and shoppers)
+    world/          The 3D store: StoreWorld (three.js scene), props.ts and people.ts (furniture and
+                    blocky shoppers), and procedural textures
     scenes/         StoreScene (walking + HUD), TerminalScene (search), TapeScene (full sheet)
     voxel/          The shelf figures: a voxel grid, one drawing function per form, looks.ts
     draw/           Display-case art, isometric voxel sprites, HUD and UI helpers (2D canvas)
