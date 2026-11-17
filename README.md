@@ -1,7 +1,7 @@
 # Low Botanica
 
 A 90s video rental store where every tape on the shelf is an entry in an index of
-psychoactive plants and synthetics. Walk the aisles, or use the store computer to search by
+psychoactive plants and synthetics. Browse the aisles, or use the store computer to search by
 name, compound, effect or duration. Pick up a tape to read the back of the box: compounds and
 their percentages, effects, onset and duration, reported doses, traditional routes, toxicity rating, risks, interactions, origin and an A-D evidence tier. Reputations that don't hold up get a BUSTED stamp and their own aisle.
 
@@ -10,14 +10,13 @@ Built with TypeScript, [Vite](https://vite.dev) and the HTML5 Canvas API. To add
 
 ## Controls
 
-| Where           | Keys                                                                                            |
-| --------------- | ----------------------------------------------------------------------------------------------- |
-| In the store    | WASD / arrows walk, E or Enter open the tape in front of you, R/F look up/down, / search, M map |
-| Search computer | Type to search, Tab change search type, arrows select, Enter view, Esc back                     |
-| Tape            | Arrows / wheel scroll, Esc put it back                                                          |
+| Where           | Keys                                                                   |
+| --------------- | ---------------------------------------------------------------------- |
+| Shop floor      | Arrows/WASD browse, Q/E or [ ] change aisle, Enter pick up, / search   |
+| Search computer | Type to search, Tab change search type, arrows select, Enter view, Esc |
+| Tape            | Arrows / wheel scroll, Esc put it back                                 |
 
-With the mouse: point at a tape for a quick summary, click it for the full box, click the computer
-on the counter to search, and click the floor to walk there.
+Everything also works with the mouse.
 
 Duration search understands `short` (<2h), `medium` (2-6h), `long` (6-16h), `very long`, `4h`,
 `2-3 hours`, `under 90m`, `over 8h` and `onset under 30m`.
@@ -60,8 +59,6 @@ src/
     pointer.ts      Mouse/touch state (position, clicks, wheel)
     textfield.ts    Text entry via a hidden <input> (works with phone keyboards)
     text.ts         Word wrapping and truncation
-    collision.ts    Box overlap and wall-sliding movement
-    camera.ts       Keeps a scrolling camera inside the world
     canvas.ts       High-DPI canvas that tracks its size
     math.ts         Small math helpers
   game/
@@ -73,8 +70,7 @@ src/
     backcover.ts    What goes on the back of a tape box
     theme.ts        Stage size, palette, fonts, toxicity colours
     draw/           Tape box art and UI drawing helpers
-    store/layout.ts Builds the store from the catalogue: racks per aisle, counter, walls
-    scenes/         StoreScene (walk around), TerminalScene (search), TapeScene (details)
+    scenes/         FloorScene (shelves), TerminalScene (search), TapeScene (details)
 ```
 
 Tests live next to the code they cover as `*.test.ts`.
