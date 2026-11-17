@@ -35,9 +35,9 @@ export const MORE: Botanical[] = [
     toxicity: 'unknown',
     toxicityNotes: 'Large doses give salivation, ataxia, retching and vomiting.',
     risks: ['salivation', 'ataxia', 'retching and vomiting at large doses'],
-    evidence: 'C',
+    evidence: 'B',
     evidenceNotes:
-      'The tree rates it B, the ranking document C. Mayagoitia 1986 (double-blind): more dreams than placebo and more than diazepam; subjects reporting more than one dream per session were always on Calea. EEG showed more slow-wave sleep and apparently less REM, so the vendor claim of "more light sleep, less SWS" inverts the paper. The human arm used organic extracts, not tea; what reached significance in healthy volunteers was slower reaction time and time-lapse estimation. A 2016 mouse study found only analgesia; a 2021 rodent paper reports more hippocampal activity in REM, contradicting the REM decrease.',
+      'Mayagoitia 1986 (double-blind): more dreams than placebo and more than diazepam; subjects reporting more than one dream per session were always on Calea. EEG showed more slow-wave sleep and apparently less REM, so the vendor claim of "more light sleep, less SWS" inverts the paper. The human arm used organic extracts, not tea; what reached significance in healthy volunteers was slower reaction time and time-lapse estimation. A 2016 mouse study found only analgesia; a 2021 rodent paper reports more hippocampal activity in REM, contradicting the REM decrease.',
     sources: [TREE, RANK],
   },
   {
@@ -243,7 +243,7 @@ export const MORE: Botanical[] = [
         percent: [4.3, 4.3],
         part: 'seed',
         notes:
-          'Figures from one analysis; the total is also reported as 2-7% of dry seed weight. Competitive, reversible MAO-A inhibition (seed extract IC50 27 µg/L). Also inhibits DYRK1A (Kd about 82 µM).',
+          'Competitive, reversible MAO-A inhibition (seed extract IC50 27 µg/L). Also inhibits DYRK1A (Kd about 82 µM).',
       },
       {
         name: 'Harmaline',

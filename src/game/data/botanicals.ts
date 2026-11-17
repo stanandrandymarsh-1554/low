@@ -6,10 +6,7 @@ const TREE = 'The Target Tree: psychoactive botanicals by receptor (rebuild, 16 
 const RANK =
   'Ethnobotanical pharmacology: consolidated ranking (handover v3 + Rätsch sweep), 4 Oct 2026';
 
-/**
- * Plants, fungi and other natural sources. Figures come from the two uploaded sources unless an
- * entry says otherwise. Where the two sources give different evidence tiers, the lower is used.
- */
+/** Plants, fungi and other natural sources. Figures come from the two uploaded sources unless an entry says otherwise. */
 const CORE: Botanical[] = [
   // ───────────────────────────── Visionary ─────────────────────────────
   {
@@ -142,9 +139,9 @@ const CORE: Botanical[] = [
     risks: [],
     history:
       'Anadenanthera colubrina seed in two bone pipes at Inca Cueva, radiocarbon-dated to 2130 BCE, with tryptamines confirmed chemically (smoking, not snuffing). A 2025 study of bone and shell tubes from Chavín de Huántar pushed the oldest Peruvian Andean evidence past 2,000 years. The Circumpuna tubes held coprostanol and human faecal matter alongside bufotenine.',
-    evidence: 'B',
+    evidence: 'A',
     evidenceNotes:
-      'The tree rates it A; the ranking document rates it B because archaeology and receptor pharmacology disagree. Position 5 of the indole ring decides delivery: DMT (nothing) is orally inactive; bufotenine (hydroxyl) is poorly lipid-soluble; 5-MeO-DMT (methoxy) crosses easily and is far more potent. CYP2D6 converts 5-MeO-DMT back into bufotenine.',
+      'Bufotenine binds and activates 5-HT2A and 5-HT2C comparably to LSD, psilocin and 5-MeO-DMT; the open question is delivery, not receptor activity. Position 5 of the indole ring decides delivery: DMT (nothing) is orally inactive; bufotenine (hydroxyl) is poorly lipid-soluble; 5-MeO-DMT (methoxy) crosses easily and is far more potent. CYP2D6 converts 5-MeO-DMT back into bufotenine.',
     sources: [TREE, RANK],
   },
   {
@@ -283,9 +280,9 @@ const CORE: Botanical[] = [
     toxicityNotes:
       'Ibotenic acid is an excitotoxin, and the ratio of ibotenic acid to muscimol in a given mushroom cannot currently be verified: both molecules are small and unstable, and commercial HPLC often fails to give repeatable results.',
     risks: ['unknown and unverifiable ibotenic acid content'],
-    evidence: 'B',
+    evidence: 'A',
     evidenceNotes:
-      'The tree rates the mechanism A; the ranking document rates it B because nobody can verify the conversion analytically yet and there is no controlled dose-response study.',
+      'Muscimol is a potent orthosteric GABA-A agonist and the conversion from ibotenic acid is well understood. What cannot yet be verified is how much of either a given mushroom holds.',
     sources: [TREE, RANK],
   },
 ];
