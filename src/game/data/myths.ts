@@ -83,7 +83,7 @@ export const MYTHS: Botanical[] = [
     toxicity: 'unknown',
     risks: [],
     myth: {
-      reputation: 'A legal salvinorin A plant.',
+      reputation: 'A salvinorin A plant.',
       finding:
         'The 2024 paper cited 200-500 µg as an effective dose, which would need 30-75 g of fresh plant before combustion losses. The figure was never measured: it was calculated relative to salvinorin B, with standards only for salvinorin B, caffeic acid and rosmarinic acid. Supermarket material, no voucher, no genetic ID, two replications, and three outright pharmacology errors in the discussion.',
     },
@@ -135,7 +135,7 @@ export const MYTHS: Botanical[] = [
     toxicity: 'unknown',
     risks: [],
     myth: {
-      reputation: 'A legal opium substitute.',
+      reputation: 'An opium substitute.',
       finding: 'The sesquiterpene lactones have no opioid activity.',
     },
     evidence: 'D',
