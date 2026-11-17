@@ -27,6 +27,8 @@ export class MouseLook {
   }
 
   lock(): void {
+    // Phones (iOS especially) have no pointer lock.
+    if (typeof this.target.requestPointerLock !== 'function') return;
     // Newer browsers return a promise that can reject (e.g. locked again too soon).
     Promise.resolve(this.target.requestPointerLock()).catch(() => undefined);
   }

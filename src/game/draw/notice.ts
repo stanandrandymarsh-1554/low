@@ -5,7 +5,12 @@ import { button, text } from './ui';
 export const NOTICE_OK: Rect = { x: W / 2 - 90, y: 408, w: 180, h: 36 };
 
 /** The "welcome" card shown on first entering the store. Drawn on the 960x540 stage. */
-export function drawNotice(ctx: CanvasRenderingContext2D, flash: boolean, hoverOk: boolean): void {
+export function drawNotice(
+  ctx: CanvasRenderingContext2D,
+  flash: boolean,
+  hoverOk: boolean,
+  touch = false,
+): void {
   ctx.fillStyle = 'rgba(20,14,9,0.8)';
   ctx.fillRect(0, 0, W, H);
   const r: Rect = { x: W / 2 - 300, y: 90, w: 600, h: 366 };
@@ -31,7 +36,9 @@ export function drawNotice(ctx: CanvasRenderingContext2D, flash: boolean, hoverO
     'studies or traditional use. Treat them as reference,',
     'not advice, and expect them to vary.',
     '',
-    'WASD walk  ·  mouse look  ·  aim at a tape, press E',
+    touch
+      ? 'left thumb walk  ·  drag to look  ·  tap a figure'
+      : 'WASD walk  ·  mouse look  ·  aim at a tape, press E',
   ];
   body.forEach((line, i) =>
     text(ctx, line, W / 2, r.y + 78 + i * 25, {

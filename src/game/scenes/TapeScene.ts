@@ -46,7 +46,7 @@ export class TapeScene implements Scene {
     if (keys.wasPressed('PageUp')) this.scroll -= BODY.h - SCROLL_STEP;
     if (keys.wasPressed('Home')) this.scroll = 0;
     if (keys.wasPressed('End')) this.scroll = Infinity;
-    this.scroll += mouse.wheel * 0.6;
+    this.scroll += mouse.wheel * 0.6 - mouse.drag;
     this.scroll = Math.max(0, Math.min(this.scroll, Math.max(0, this.contentH - BODY.h)));
   }
 
@@ -118,8 +118,12 @@ export class TapeScene implements Scene {
     }
 
     const footY = CARD.y + CARD.h - 20;
-    const x = keyHint(ctx, BODY.x, footY, '↑↓', 'scroll');
-    keyHint(ctx, x, footY, 'ESC', 'put it back');
+    if (this.controls.touch.active) {
+      text(ctx, 'DRAG TO SCROLL', BODY.x, footY, { size: 20, color: C.dim });
+    } else {
+      const x = keyHint(ctx, BODY.x, footY, '↑↓', 'scroll');
+      keyHint(ctx, x, footY, 'ESC', 'put it back');
+    }
     button(ctx, BACK, 'RETURN', this.hoverBack, C.gold);
   }
 

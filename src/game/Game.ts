@@ -4,13 +4,15 @@ import type { Input } from '../engine/input';
 import type { MouseLook } from '../engine/mouselook';
 import type { Pointer } from '../engine/pointer';
 import type { TextField } from '../engine/textfield';
+import type { TouchControls } from '../engine/touch';
 import { CATALOGUE } from './data';
 import type { Entry } from './data/types';
 import type { Controls, Scene, Stage } from './scene';
 import { StoreScene } from './scenes/StoreScene';
 import { TapeScene } from './scenes/TapeScene';
 import { TerminalScene } from './scenes/TerminalScene';
-import { H, W } from './theme';
+import { text } from './draw/ui';
+import { C, H, W } from './theme';
 
 /**
  * Low Botanica: a 90s video store you walk around in first person. Every tape on the shelves
@@ -33,6 +35,7 @@ export class Game implements Stage {
     private readonly pointer: Pointer,
     text: TextField,
     look: MouseLook,
+    touch: TouchControls,
     gl: GlView,
     entries: readonly Entry[] = CATALOGUE,
   ) {
@@ -40,8 +43,9 @@ export class Game implements Stage {
       keys: input,
       text,
       look,
+      touch,
       cursor: 'default',
-      mouse: { x: 0, y: 0, inside: false, moved: false, clicked: false, wheel: 0 },
+      mouse: { x: 0, y: 0, inside: false, moved: false, clicked: false, wheel: 0, drag: 0 },
       pixel: { x: 0, y: 0, inside: false },
       view,
     };
@@ -87,19 +91,27 @@ export class Game implements Stage {
     mouse.moved = mouse.x !== this.lastMouse.x || mouse.y !== this.lastMouse.y;
     mouse.clicked = p.wasClicked();
     mouse.wheel = p.wheelDelta();
+    mouse.drag = p.dragDelta() / this.scale;
     if (!p.inside) mouse.x = mouse.y = -1;
     this.lastMouse = { x: mouse.x, y: mouse.y };
     this.controls.pixel.x = p.x;
     this.controls.pixel.y = p.y;
     this.controls.pixel.inside = p.inside;
 
-    // The scene may set this while updating.
+    // The scene may set this while updating. A phone held upright waits until it is turned.
     this.controls.cursor = 'default';
-    this.scenes.at(-1)?.update(dt);
+    if (!this.upright()) this.scenes.at(-1)?.update(dt);
     p.setCursor(this.controls.cursor);
 
     this.controls.keys.endFrame();
+    this.controls.touch.endFrame();
     p.endFrame();
+  }
+
+  /** Is a touch screen being held in portrait, where the shop is too cramped to use? */
+  private upright(): boolean {
+    const { width, height } = this.view;
+    return this.controls.touch.active && height > width * 1.05;
   }
 
   render(alpha = 1): void {
@@ -132,5 +144,39 @@ export class Game implements Stage {
       scene.render(ctx);
       ctx.restore();
     }
+    if (this.upright()) this.drawRotate(ctx, width, height);
+  }
+
+  private drawRotate(ctx: CanvasRenderingContext2D, width: number, height: number): void {
+    ctx.save();
+    ctx.fillStyle = 'rgba(20,14,9,0.94)';
+    ctx.fillRect(0, 0, width, height);
+    const s = Math.min(1, width / 360);
+    ctx.translate(width / 2, height / 2);
+    ctx.scale(s, s);
+    // A little phone, turned on its side.
+    ctx.strokeStyle = C.gold;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.roundRect(-34, -58, 68, 116, 10);
+    ctx.stroke();
+    ctx.fillStyle = C.gold;
+    ctx.fillRect(-10, 44, 20, 4);
+    ctx.beginPath();
+    ctx.arc(62, -50, 34, Math.PI * 1.1, Math.PI * 1.85);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(86, -40);
+    ctx.lineTo(96, -62);
+    ctx.lineTo(70, -62);
+    ctx.fill();
+    text(ctx, 'TURN YOUR PHONE', 0, 110, { size: 14, head: true, align: 'center', color: C.white });
+    text(ctx, 'SIDEWAYS TO BROWSE', 0, 136, {
+      size: 14,
+      head: true,
+      align: 'center',
+      color: C.white,
+    });
+    ctx.restore();
   }
 }

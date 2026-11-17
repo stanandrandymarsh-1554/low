@@ -43,6 +43,7 @@ export function drawTapeTooltip(
   entry: Entry,
   x: number,
   y: number,
+  touch = false,
 ): void {
   const w = TOOLTIP_W;
   const h = TOOLTIP_H;
@@ -81,7 +82,8 @@ export function drawTapeTooltip(
   const effects = entry.effects.slice(0, 3).join(', ');
   text(ctx, fitText(effects, w - 28, measure), x + 14, y + 98, { size: 20 });
 
-  keyHint(ctx, x + 14, y + h - 8, 'E', 'or click: open the box', C.gold);
+  if (touch) keyHint(ctx, x + 14, y + h - 8, 'TAP', 'a figure, or the OPEN button', C.gold);
+  else keyHint(ctx, x + 14, y + h - 8, 'E', 'or click: open the box', C.gold);
 }
 
 export function drawPrompt(
@@ -93,7 +95,14 @@ export function drawPrompt(
 ): void {
   panel(ctx, x, y, 320, 70, C.teal);
   text(ctx, title, x + 14, y + 28, { size: 12, head: true });
-  keyHint(ctx, x + 14, y + 56, 'E', hint, C.gold);
+  keyHint(
+    ctx,
+    x + 14,
+    y + 56,
+    hint.startsWith('tap') ? 'TAP' : 'E',
+    hint.replace(/^tap /, ''),
+    C.gold,
+  );
 }
 
 /** "NOW BROWSING: AISLE" badge. */
