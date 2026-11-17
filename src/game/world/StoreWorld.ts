@@ -21,56 +21,60 @@ import {
   SphereGeometry,
   Vector2,
   type BufferGeometry,
-  type Texture,
   type WebGLRenderer,
 } from 'three';
 import type { Box } from '../../engine/collision';
 import type { Pose } from '../../engine/firstperson';
 import type { Entry } from '../data/types';
-import { tapeHue } from '../draw/tape';
+import { entryHue } from '../draw/specimen';
 import { C } from '../theme';
 import type { Gondola, Layout } from '../store/layout';
-import { EYE_HEIGHT, SHELF, TAPE, TAPE_TILT } from '../store/scale';
+import { EYE_HEIGHT, ITEM, SHELF } from '../store/scale';
+import { buildModel, lookFor } from '../voxel/model';
+import { voxelGeometry } from './voxelMesh';
 import {
   carpetTexture,
   ceilingTexture,
   clockTexture,
-  coverTexture,
   headerTexture,
   marqueeTexture,
   mediaButtonTexture,
   openSignTexture,
   plasterTexture,
+  posterTexture,
   terminalTexture,
-  whiteTexture,
   woodTexture,
 } from './textures';
 
 /** What the crosshair (or cursor) is pointing at. */
 export type Pick =
-  { kind: 'tape'; entry: Entry; distance: number } | { kind: 'terminal'; distance: number };
+  { kind: 'item'; entry: Entry; distance: number } | { kind: 'terminal'; distance: number };
 
-/** How close you must be to read a tape's tooltip, and to use the computer. */
-const TAPE_REACH = 3.2;
+/** How close you must be to read a figure's tooltip, and to use the computer. */
+const ITEM_REACH = 3.2;
 const TERMINAL_REACH = 2.6;
-/** Tape covers are drawn when you come within this many metres, and freed beyond UNLOAD. */
-const COVER_LOAD = 8;
-const COVER_UNLOAD = 18;
+/** Figures are sculpted when you come within this many metres, and freed beyond UNLOAD. */
+const MODEL_LOAD = 8;
+const MODEL_UNLOAD = 18;
 
-interface TapeMesh {
+/** One figure on a shelf: an invisible box to aim at, and the sculpture while you are near. */
+interface ItemMesh {
   mesh: Mesh;
   entry: Entry;
-  material: MeshLambertMaterial;
-  cover: CanvasTexture | null;
-  placeholder: Color;
+  /** A plain block in the figure's main colour, shown until it has been sculpted. */
+  stand: Mesh;
+  model: Mesh | null;
 }
 
 interface UserData {
-  kind?: 'tape' | 'terminal';
+  kind?: 'item' | 'terminal';
   entry?: Entry;
 }
 
 const hex = (s: string) => new Color(s);
+
+/** Posters on the walls: the proportions of the texture drawn in `posterTexture`. */
+const POSTER = { w: 360, h: 560 } as const;
 
 /** Builds and renders the 3D store from a layout. Pure presentation: no game rules in here. */
 export class StoreWorld {
@@ -82,15 +86,16 @@ export class StoreWorld {
   private readonly solids = new Group();
   private readonly raycaster = new Raycaster();
   private readonly ndc = new Vector2();
-  private readonly tapes: TapeMesh[] = [];
+  private readonly items: ItemMesh[] = [];
+  private readonly standMaterials = new Map<string, MeshLambertMaterial>();
   private readonly outline: LineSegments;
-  private readonly white: CanvasTexture;
   private readonly anisotropy: number;
   private hovered: Mesh | null = null;
   private readonly geo = {
     unit: new BoxGeometry(1, 1, 1),
     plane: new PlaneGeometry(1, 1),
-    tape: new BoxGeometry(TAPE.w, TAPE.h, TAPE.d),
+    item: new BoxGeometry(ITEM.w, ITEM.h, ITEM.d),
+    stand: new BoxGeometry(ITEM.w * 0.5, ITEM.h * 0.6, ITEM.d * 0.5),
   };
   private readonly mat = {
     cabinet: new MeshLambertMaterial({ color: hex('#2e241d') }),
@@ -111,6 +116,8 @@ export class StoreWorld {
     shadow: new MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.32 }),
     glass: new MeshBasicMaterial({ color: hex('#a9c6e2'), transparent: true, opacity: 0.55 }),
     rug: new MeshLambertMaterial({ color: hex('#7a3322') }),
+    figure: new MeshLambertMaterial({ vertexColors: true, emissive: hex('#241a12') }),
+    hit: new MeshBasicMaterial({ visible: false }),
   };
 
   constructor(
@@ -119,7 +126,6 @@ export class StoreWorld {
   ) {
     this.anisotropy = renderer.capabilities.getMaxAnisotropy();
     this.colliders = layout.colliders;
-    this.white = whiteTexture();
     this.camera.rotation.order = 'YXZ';
 
     this.scene.background = hex('#1a120c');
@@ -134,10 +140,10 @@ export class StoreWorld {
     this.buildDoor();
     this.buildDecor();
     this.buildPosters();
-    this.buildTapes();
+    this.buildItems();
 
     this.outline = new LineSegments(
-      new EdgesGeometry(this.geo.tape),
+      new EdgesGeometry(this.geo.item),
       new LineBasicMaterial({ color: hex(C.gold), depthTest: false }),
     );
     this.outline.renderOrder = 10;
@@ -168,12 +174,12 @@ export class StoreWorld {
   /** What is under (x, y) in normalised device coordinates (-1..1, +y up)? `null` for nothing. */
   pick(x: number, y: number): Pick | null {
     this.raycaster.setFromCamera(this.ndc.set(x, y), this.camera);
-    this.raycaster.far = Math.max(TAPE_REACH, TERMINAL_REACH);
+    this.raycaster.far = Math.max(ITEM_REACH, TERMINAL_REACH);
     const hit = this.raycaster.intersectObjects(this.solids.children, true)[0];
     const data = hit?.object.userData as UserData | undefined;
-    if (hit && data?.kind === 'tape' && data.entry && hit.distance <= TAPE_REACH) {
+    if (hit && data?.kind === 'item' && data.entry && hit.distance <= ITEM_REACH) {
       this.setHover(hit.object as Mesh);
-      return { kind: 'tape', entry: data.entry, distance: hit.distance };
+      return { kind: 'item', entry: data.entry, distance: hit.distance };
     }
     this.setHover(null);
     if (hit && data?.kind === 'terminal' && hit.distance <= TERMINAL_REACH) {
@@ -192,37 +198,26 @@ export class StoreWorld {
     }
   }
 
-  // ── tape covers: drawn when near, freed when far, so big catalogues stay light ──────────
+  // ── figures: sculpted when near, freed when far, so big catalogues stay light ───────────
 
-  updateCovers(x: number, z: number, budget = 4): void {
-    for (const t of this.tapes) {
-      const dx = t.mesh.position.x - x;
-      const dz = t.mesh.position.z - z;
+  updateModels(x: number, z: number, budget = 4): void {
+    for (const it of this.items) {
+      const dx = it.mesh.position.x - x;
+      const dz = it.mesh.position.z - z;
       const d2 = dx * dx + dz * dz;
-      if (!t.cover && d2 < COVER_LOAD * COVER_LOAD && budget > 0) {
+      if (!it.model && d2 < MODEL_LOAD * MODEL_LOAD && budget > 0) {
         budget--;
-        t.cover = coverTexture(t.entry, this.anisotropy);
-        this.setCover(t, t.cover);
-      } else if (t.cover && d2 > COVER_UNLOAD * COVER_UNLOAD) {
-        t.cover.dispose();
-        t.cover = null;
-        this.setCover(t, null);
+        const model = new Mesh(voxelGeometry(buildModel(it.entry)), this.mat.figure);
+        model.position.y = -ITEM.h / 2;
+        it.mesh.add(model);
+        it.model = model;
+        it.stand.visible = false;
+      } else if (it.model && d2 > MODEL_UNLOAD * MODEL_UNLOAD) {
+        it.mesh.remove(it.model);
+        it.model.geometry.dispose();
+        it.model = null;
+        it.stand.visible = true;
       }
-    }
-  }
-
-  private setCover(t: TapeMesh, cover: Texture | null): void {
-    const m = t.material;
-    if (cover) {
-      m.map = cover;
-      m.emissiveMap = cover;
-      m.color.set(0xffffff);
-      m.emissive.set(0x666666);
-    } else {
-      m.map = this.white;
-      m.emissiveMap = this.white;
-      m.color.copy(t.placeholder);
-      m.emissive.copy(t.placeholder).multiplyScalar(0.4);
     }
   }
 
@@ -572,7 +567,7 @@ export class StoreWorld {
     });
   }
 
-  /** Big cover art on the side walls, from the strongest-evidence entries. */
+  /** Big display posters of the figures on the side walls, from the strongest-evidence entries. */
   private buildPosters(): void {
     const chosen = [...this.layout.slots]
       .map((s) => s.entry)
@@ -584,9 +579,9 @@ export class StoreWorld {
     this.layout.posterSpots.slice(0, unique.length).forEach((spot, i) => {
       const entry = unique[i];
       if (!entry) return;
-      const tex = coverTexture(entry, this.anisotropy, 360, 634);
+      const tex = posterTexture(entry, this.anisotropy);
       const h = 1.3;
-      const w = h * (TAPE.w / TAPE.h);
+      const w = h * (POSTER.w / POSTER.h);
       const inward = spot.yaw === Math.PI / 2 ? 1 : -1;
       this.box(
         0.03,
@@ -610,20 +605,33 @@ export class StoreWorld {
     });
   }
 
-  private buildTapes(): void {
-    const side = this.mat.plastic;
+  private buildItems(): void {
     for (const slot of this.layout.slots) {
-      const placeholder = new Color().setHSL((tapeHue(slot.entry) % 360) / 360, 0.55, 0.3);
-      const front = new MeshLambertMaterial({ map: this.white, emissiveMap: this.white });
-      const mesh = new Mesh(this.geo.tape, [side, side, side, side, front, side]);
-      mesh.rotation.order = 'YXZ';
-      mesh.rotation.set(-TAPE_TILT, slot.yaw, 0);
+      const mesh = new Mesh(this.geo.item, this.mat.hit);
+      mesh.rotation.y = slot.yaw;
       mesh.position.set(slot.x, slot.y, slot.z);
-      mesh.userData = { kind: 'tape', entry: slot.entry } satisfies UserData;
+      mesh.userData = { kind: 'item', entry: slot.entry } satisfies UserData;
       this.solids.add(mesh);
-      const t: TapeMesh = { mesh, entry: slot.entry, material: front, cover: null, placeholder };
-      this.setCover(t, null);
-      this.tapes.push(t);
+
+      const look = lookFor(slot.entry);
+      const stand = new Mesh(this.geo.stand, this.standMaterial(look[1] ?? entryColor(slot.entry)));
+      stand.position.y = -ITEM.h / 2 + (ITEM.h * 0.6) / 2;
+      mesh.add(stand);
+      this.items.push({ mesh, entry: slot.entry, stand, model: null });
     }
   }
+
+  private standMaterial(color: string): MeshLambertMaterial {
+    let m = this.standMaterials.get(color);
+    if (!m) {
+      m = new MeshLambertMaterial({ color: hex(color), emissive: hex(color).multiplyScalar(0.3) });
+      this.standMaterials.set(color, m);
+    }
+    return m;
+  }
+}
+
+/** A colour for an entry with no hand-picked one, from its stable hue. */
+function entryColor(entry: Entry): string {
+  return new Color().setHSL((entryHue(entry) % 360) / 360, 0.5, 0.4).getStyle();
 }

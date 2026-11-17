@@ -1,6 +1,6 @@
 import { CanvasTexture, RepeatWrapping, SRGBColorSpace } from 'three';
 import type { Entry } from '../data/types';
-import { drawTape } from '../draw/tape';
+import { drawSpecimen } from '../draw/specimen';
 import { fitFont, text } from '../draw/ui';
 import { C, FONT_SIGN } from '../theme';
 
@@ -304,19 +304,11 @@ export function clockTexture(anisotropy: number): CanvasTexture {
   return toTexture(canvas, anisotropy);
 }
 
-/** The front of a tape box, in the same style as the rest of the game's tape art. */
-export function coverTexture(entry: Entry, anisotropy: number, w = 256, h = 450): CanvasTexture {
+/** A wall poster: the figure in its display case, drawn at 360 x 560. */
+export function posterTexture(entry: Entry, anisotropy: number, w = 360, h = 560): CanvasTexture {
   const [canvas, ctx] = makeCanvas(w, h);
   ctx.fillStyle = C.plastic;
   ctx.fillRect(0, 0, w, h);
-  drawTape(ctx, entry, 0, 0, w, h);
+  drawSpecimen(ctx, entry, 0, 0, w, h, { t: 0.4 });
   return toTexture(canvas, anisotropy);
-}
-
-/** A plain white texture, used until a tape's real cover has been drawn. */
-export function whiteTexture(): CanvasTexture {
-  const [canvas, ctx] = makeCanvas(4, 4);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, 4, 4);
-  return toTexture(canvas, 1);
 }

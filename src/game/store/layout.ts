@@ -1,12 +1,12 @@
 import type { Box } from '../../engine/collision';
 import { ALL_AISLE, buildAisles } from '../aisles';
 import type { Entry } from '../data/types';
-import { SHELF, STORE, TAPE } from './scale';
+import { SHELF, STORE, ITEM } from './scale';
 
 const ROWS = SHELF.rowBottoms.length;
 const BAY_CAPACITY = ROWS * SHELF.maxCols;
 
-/** One tape standing on a shelf. `x/y/z` is the centre of the box. */
+/** One figure standing on a shelf. `x/y/z` is the centre of the box. */
 export interface Slot {
   entry: Entry;
   aisle: string;
@@ -25,12 +25,12 @@ export interface Gondola {
   depth: number;
 }
 
-/** The stretch of shelf front that holds one aisle's tapes. */
+/** The stretch of shelf front that holds one aisle's figures. */
 export interface AisleSpan {
   aisle: string;
   x0: number;
   x1: number;
-  /** z of the face the tapes stand on. */
+  /** z of the face the figures stand on. */
   zFace: number;
   yaw: number;
 }
@@ -79,7 +79,7 @@ function bayLength(count: number): number {
 /**
  * Lays the catalogue out as a store: aisles are paired back to back on double-sided shelving,
  * lanes of shelving run left to right, and the counter and door sit at the front.
- * An aisle with many tapes gets several bays in a row, so the store grows with the catalogue.
+ * An aisle with many figures gets several bays in a row, so the store grows with the catalogue.
  */
 export function buildLayout(entries: readonly Entry[]): Layout {
   const aisles = buildAisles(entries).filter((a) => a.name !== ALL_AISLE && a.entries.length > 0);
@@ -121,7 +121,7 @@ export function buildLayout(entries: readonly Entry[]): Layout {
         const cols = Math.ceil(bay.length / ROWS);
         const firstU = len / 2 - (cols * SHELF.colPitch) / 2 + SHELF.colPitch / 2;
         bay.forEach((entry, i) => {
-          // Fill top to bottom, then along: the first tape is top-left as the shopper sees it.
+          // Fill top to bottom, then along: the first figure is top-left as the shopper sees it.
           const col = Math.floor(i / ROWS);
           const row = ROWS - 1 - (i % ROWS);
           const u = firstU + col * SHELF.colPitch;
@@ -130,8 +130,8 @@ export function buildLayout(entries: readonly Entry[]): Layout {
             aisle: aisle.name,
             // Seen from the back side the shopper faces +z, so left-to-right runs toward -x.
             x: front ? sx + u : sx + len - u,
-            y: (SHELF.rowBottoms[row] ?? 0) + TAPE.h / 2,
-            z: zc + (front ? 1 : -1) * SHELF.tapeOffset,
+            y: (SHELF.rowBottoms[row] ?? 0) + ITEM.h / 2,
+            z: zc + (front ? 1 : -1) * SHELF.itemOffset,
             yaw: front ? 0 : Math.PI,
           });
         });

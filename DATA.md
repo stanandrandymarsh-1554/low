@@ -1,12 +1,18 @@
 # Adding plants and compounds
 
-Every tape on the shelves is one entry in `src/game/data/`:
+Every figure on the shelves is one entry in `src/game/data/`:
 
 - `botanicals.ts`: plants, fungi and other natural sources
 - `synthetics.ts`: lab-made and semi-synthetic substances
 
 The full field list, with comments, is in `src/game/data/types.ts`. `npm test` checks the data
 (unique ids, valid ranges, percentages within 0-100, required fields) and says which entry is wrong.
+
+Each entry also needs a look in `src/game/voxel/looks.ts`, which says how its shelf figure is
+drawn: a form (`mushroom`, `root`, `pod`, `crystals`, `vial`, `molecule`, ...) and optionally its
+colours. Draw plants as the plant or the part that is used, and lab-made things as the isolated
+compound; use `molecule` for a whole class of related compounds. The tests list any entry without a
+look. To add a new form, write a draw function in `src/game/voxel/forms.ts`.
 
 Entries marked `sample: true` are placeholders. Delete them once real entries are in.
 

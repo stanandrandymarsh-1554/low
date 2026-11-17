@@ -1,7 +1,7 @@
 import { wrapText } from '../../engine/text';
 import { buildBackCover, subtitle, type Block } from '../backcover';
 import type { Entry } from '../data/types';
-import { drawTape, tapeHue } from '../draw/tape';
+import { drawSpecimen, entryHue } from '../draw/specimen';
 import { button, keyHint, ratingSticker, setFont, text } from '../draw/ui';
 import { inRect, type Controls, type Rect, type Scene } from '../scene';
 import { C, H, TOXICITY_STYLE, W } from '../theme';
@@ -52,7 +52,7 @@ export class TapeScene implements Scene {
 
   render(ctx: CanvasRenderingContext2D): void {
     const e = this.entry;
-    const hue = tapeHue(e);
+    const hue = entryHue(e);
 
     ctx.fillStyle = 'rgba(20,14,9,0.82)';
     ctx.fillRect(0, 0, W, H);
@@ -69,7 +69,7 @@ export class TapeScene implements Scene {
     ctx.fillRect(CARD.x, CARD.y, CARD.w, CARD.h);
 
     // Left column: cover, rating, kind.
-    drawTape(ctx, e, CARD.x + 22, CARD.y + 22, 214, 306, { t: this.t });
+    drawSpecimen(ctx, e, CARD.x + 22, CARD.y + 22, 214, 306, { t: this.t });
     ratingSticker(ctx, e.toxicity, CARD.x + 52, CARD.y + 372, 26);
     const tox = TOXICITY_STYLE[e.toxicity];
     text(ctx, 'RATED', CARD.x + 88, CARD.y + 364, { size: 18, color: C.dim });

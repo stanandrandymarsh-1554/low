@@ -3,7 +3,7 @@ import { circleOverlapsBox } from '../../engine/collision';
 import { CATALOGUE } from '../data';
 import type { Entry } from '../data/types';
 import { buildLayout, nearestAisle, type Layout } from './layout';
-import { PLAYER_RADIUS, SHELF, TAPE } from './scale';
+import { PLAYER_RADIUS, SHELF, ITEM } from './scale';
 
 /** A big, lopsided catalogue: one huge aisle, some small ones. */
 function bigCatalogue(): Entry[] {
@@ -34,7 +34,7 @@ describe.each(layouts)('buildLayout with %s', (_name, entries) => {
     expect(layout.slots.map((s) => s.entry.id).sort()).toEqual(entries.map((e) => e.id).sort());
   });
 
-  it('keeps tapes on their gondola and within the room', () => {
+  it('keeps figures on their gondola and within the room', () => {
     const { room } = layout;
     for (const s of layout.slots) {
       const g = layout.gondolas.find(
@@ -46,17 +46,17 @@ describe.each(layouts)('buildLayout with %s', (_name, entries) => {
       expect(g, `${s.entry.id} is on a gondola`).toBeDefined();
       expect(s.x).toBeGreaterThan(room.minX);
       expect(s.x).toBeLessThan(room.maxX);
-      expect(s.y - TAPE.h / 2).toBeGreaterThanOrEqual(SHELF.rowBottoms[0] ?? 0);
-      expect(s.y + TAPE.h / 2).toBeLessThanOrEqual(SHELF.height);
+      expect(s.y - ITEM.h / 2).toBeGreaterThanOrEqual(SHELF.rowBottoms[0] ?? 0);
+      expect(s.y + ITEM.h / 2).toBeLessThanOrEqual(SHELF.height);
     }
   });
 
-  it('never overlaps two tapes', () => {
+  it('never overlaps two figures', () => {
     const sorted = [...layout.slots].sort((a, b) => a.z - b.z || a.y - b.y || a.x - b.x);
     for (let i = 1; i < sorted.length; i++) {
       const a = sorted[i - 1];
       const b = sorted[i];
-      if (a && b && a.z === b.z && a.y === b.y) expect(b.x - a.x).toBeGreaterThanOrEqual(TAPE.w);
+      if (a && b && a.z === b.z && a.y === b.y) expect(b.x - a.x).toBeGreaterThanOrEqual(ITEM.w);
     }
   });
 
@@ -77,7 +77,7 @@ describe.each(layouts)('buildLayout with %s', (_name, entries) => {
 });
 
 describe('buildLayout scaling', () => {
-  it('grows the store as aisles and tapes are added', () => {
+  it('grows the store as aisles and figures are added', () => {
     const small = buildLayout(CATALOGUE.slice(0, 2));
     const real = buildLayout(CATALOGUE);
     const big = buildLayout(bigCatalogue());
