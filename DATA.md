@@ -101,3 +101,25 @@ Optional fields that sources often cover:
 
 You can also send entries in any format (a list, a spreadsheet, rough notes) and have them
 converted to the templates above.
+
+## The pharmacology index (`sources/pharmacology-index.json`)
+
+333 compounds, extracts and supplement ingredients (the CrossTheLimits index). The JSON is kept
+exactly as supplied; `ctl.ts` turns each row into an entry, and the rules are in that file and
+tested in `ctl.test.ts`:
+
+- **Aisles:** by the row's category (Stimulants, Nootropics, Hormones & Peptides, Longevity &
+  Metabolism, Amino Acids & Basics, Mystery Labels, and the existing Cannabis-Like and Calm &
+  Sedation); the 140 botanicals are split over Herbs & Extracts A-K and L-Z.
+- **Evidence tier:** A = established in humans or backed by human trials; B = limited human data
+  or animal / in-vitro pharmacology; C = traditional or historical only; D = unestablished,
+  unidentified, or anecdote. Rows flagged as unverified placeholders are always D.
+- **Toxicity:** from the cautions listed (seizures, dependence, serious cardiovascular risk are
+  high; cardiovascular, liver, interaction and similar are moderate; anything else low). Nothing
+  listed counts as low only where there is human experience; otherwise it is unknown.
+- **Doses:** kept only where the row gives an amount, and never for rows whose dose basis is "not
+  established". Nothing is invented.
+- Anything about law, regulation, retail or labelling is dropped. Rows that repeat something
+  already on the shelves (ephedra, kratom, yohimbe, ashwagandha, kava, ...) are skipped.
+- **Looks:** these entries have no hand-drawn look; `voxel/guess.ts` picks one from keywords in
+  the plant's name, or from the aisle for compounds.

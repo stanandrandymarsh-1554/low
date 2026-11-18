@@ -90,6 +90,8 @@ interface EntryBase {
   evidenceNotes?: string;
   /** For entries whose reputation doesn't hold up: what people say, and what the record shows. */
   myth?: { reputation: string; finding: string };
+  /** How it acts in the body: receptors, transporters, enzymes, as far as the sources say. */
+  mechanism?: string;
   /** Where the info came from (URLs, books, papers). */
   sources?: string[];
   /** Mark placeholder entries so they are easy to find and remove. */
@@ -98,8 +100,8 @@ interface EntryBase {
 
 export interface Botanical extends EntryBase {
   kind: 'botanical';
-  /** Scientific name, e.g. "Coffea arabica". */
-  latin: string;
+  /** Scientific name, e.g. "Coffea arabica". Leave out for extracts with no single species. */
+  latin?: string;
   family?: string;
   /** Where it grows / where it is from. */
   region?: string;
@@ -115,7 +117,8 @@ export interface Synthetic extends EntryBase {
   chemicalClass: string;
   /** Fully synthetic, or made from a natural precursor. */
   synthesis?: 'synthetic' | 'semi-synthetic';
-  origin: {
+  /** Leave out when the sources don't say where it came from. */
+  origin?: {
     year?: number;
     /** Person, lab or company. */
     by?: string;

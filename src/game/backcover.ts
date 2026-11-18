@@ -13,7 +13,7 @@ export type Block =
   | { type: 'warning'; text: string };
 
 export function subtitle(entry: Entry): string {
-  return entry.kind === 'botanical' ? entry.latin : entry.chemicalClass;
+  return entry.kind === 'botanical' ? (entry.latin ?? 'plant extract') : entry.chemicalClass;
 }
 
 export function buildBackCover(entry: Entry): Block[] {
@@ -49,14 +49,20 @@ export function buildBackCover(entry: Entry): Block[] {
       );
     }
   } else {
-    const { year, by, story } = entry.origin;
+    const { year, by, story } = entry.origin ?? { story: '' };
     const facts: [string, string][] = [];
     if (year) facts.push(['FIRST MADE', String(year)]);
     if (by) facts.push(['BY', by]);
     if (entry.synthesis) facts.push(['TYPE', entry.synthesis]);
     facts.push(['CLASS', entry.chemicalClass]);
-    section('ORIGIN', { type: 'facts', rows: facts }, { type: 'para', text: story });
+    section(
+      entry.origin ? 'ORIGIN' : 'ABOUT',
+      { type: 'facts', rows: facts },
+      ...(story ? [{ type: 'para', text: story } as Block] : []),
+    );
   }
+
+  if (entry.mechanism) section('HOW IT WORKS', { type: 'para', text: entry.mechanism });
 
   section('EFFECTS', { type: 'chips', items: entry.effects });
 
