@@ -123,3 +123,17 @@ tested in `ctl.test.ts`:
   already on the shelves (ephedra, kratom, yohimbe, ashwagandha, kava, ...) are skipped.
 - **Looks:** these entries have no hand-drawn look; `voxel/guess.ts` picks one from keywords in
   the plant's name, or from the aisle for compounds.
+
+### The evidence upgrade (`sources/evidence-upgrade.json`)
+
+32 index rows have newer, source-backed text. `patches.ts` applies it on top of the entry each row
+became (rows that repeat an existing entry, such as modafinil, kanna, kava and magnolia, update
+that entry):
+
+- The mechanism is replaced; generated entries also take the new summary and effect tags.
+- Each entry's tier is decided once in `PATCH_TIER` (A for controlled human data on the compound,
+  B for limited human data or animal / in-vitro work, D where nothing is established).
+- Reported exposures are listed only where the patch gives an amount. Generated entries replace
+  their old dose; existing entries keep theirs and gain the new one.
+- The evidence notes say what the target evidence and the effect evidence are, plus the caveats
+  that are statements of fact. Editorial instructions, corrections and regulator links are dropped.
