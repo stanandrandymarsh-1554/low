@@ -37,7 +37,9 @@ const OFF_LIMITS =
 
 /** Drops any sentence that is about law, regulation or selling. */
 export function clean(text: string): string {
-  return text
+  // A bracketed aside about selling ("marketed as ...") is cut out rather than losing the sentence.
+  const bare = text.replace(/\s*\([^()]*\)/g, (m) => (OFF_LIMITS.test(m) ? '' : m));
+  return bare
     .split(/(?<=[.!?])\s+/)
     .filter((s) => s.trim() && !OFF_LIMITS.test(s))
     .join(' ')
@@ -224,6 +226,10 @@ const DUPLICATE_OF: Record<string, string> = {
   'ctl-030': 'ephedra',
   'ctl-217': 'kratom',
   'ctl-264': 'yohimbe',
+  'ctl-042': 'modafinil',
+  'ctl-213': 'kanna',
+  'ctl-214': 'kava',
+  'ctl-226': 'magnolia-bark',
 };
 
 export function mapCompound(r: RawCompound, id: string): Entry {
@@ -291,23 +297,43 @@ export function mapCompound(r: RawCompound, id: string): Entry {
   return entry;
 }
 
-/** The index as catalogue entries, skipping rows that repeat something already on the shelves. */
-export function buildCtl(existing: readonly Entry[]): Entry[] {
+/** Which entry each index row ended up as (or was folded into), by row id. */
+function plan(existing: readonly Entry[]): { row: RawCompound; id: string; fresh: boolean }[] {
   const taken = new Set(existing.map((e) => e.id));
-  const names = new Set(
-    existing.flatMap((e) => [e.name, ...(e.aka ?? [])].map((n) => normalize(n))),
+  const names = new Map(
+    existing.flatMap((e) => [e.name, ...(e.aka ?? [])].map((n) => [normalize(n), e.id] as const)),
   );
-  const out: Entry[] = [];
+  const out: { row: RawCompound; id: string; fresh: boolean }[] = [];
   for (const r of COMPOUNDS) {
-    if (DUPLICATE_OF[r.id]) continue;
+    const dup = DUPLICATE_OF[r.id];
+    if (dup) {
+      out.push({ row: r, id: dup, fresh: false });
+      continue;
+    }
     const { name } = splitName(r.name);
-    if (names.has(normalize(name))) continue;
+    const same = names.get(normalize(name));
+    if (same) {
+      out.push({ row: r, id: same, fresh: false });
+      continue;
+    }
     let id = slug(name);
     for (let n = 2; taken.has(id); n++) id = `${slug(name)}-${n}`;
     taken.add(id);
-    out.push(mapCompound(r, id));
+    out.push({ row: r, id, fresh: true });
   }
   return out;
+}
+
+/** The index as catalogue entries, skipping rows that repeat something already on the shelves. */
+export function buildCtl(existing: readonly Entry[]): Entry[] {
+  return plan(existing)
+    .filter((p) => p.fresh)
+    .map((p) => mapCompound(p.row, p.id));
+}
+
+/** Index row id (like "ctl-042") to the id of the entry that carries it. */
+export function ctlEntryIds(existing: readonly Entry[]): Record<string, string> {
+  return Object.fromEntries(plan(existing).map((p) => [p.row.id, p.id]));
 }
 
 export const CTL_ROW_COUNT = COMPOUNDS.length;

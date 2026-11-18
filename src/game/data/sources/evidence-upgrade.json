@@ -1,0 +1,681 @@
+{
+  "metadata": {
+    "title": "CTL pharmacology evidence upgrade (selected original entries)",
+    "version": "2026-11-18-a",
+    "purpose": "Evidence-driven updates to an existing 333-entry fictional game catalogue. These are not product specifications or medication instructions.",
+    "patch_count": 32,
+    "source_index_total": 333,
+    "entry_match_policy": "Use original_id when stored; otherwise use manual name/alias mapping. Do not auto-create titles when match is missing; some entries were skipped as duplicates by Claude Code.",
+    "merge_policy": "Do not discard older material automatically; review discrepancies. Keep separate mechanism evidence vs clinical-effects evidence, and distinguish studies of pure compounds, standardized extracts, and multi-ingredient products.",
+    "scientific_limitations": "This is a selected source-backed research upgrade, not comprehensive verification of all 333 original entries. Study amounts describe exposures only and are not guidance for use.",
+    "special_notes": [
+      "Flmodafinil HAS a 2026 human analytical PK study; it does NOT establish human dopamine-transporter occupancy or cognition efficacy.",
+      "2024 human-receptor cell study directly challenges casual assertion that DMAA/DMHA/DMBA are direct adrenergic agonists at reachable exposures.",
+      "Large 2020 kava RCT null despite smaller 2013 positive trial.",
+      "Mesembrenone isolate evidence is not interchangeable with whole kanna-extract trials.",
+      "R vs S phenylpiracetam should not be collapsed into racemate pharmacology.",
+      "GABA-A modulation of isolated magnolol/honokiol does not prove clinical effect of highly concentrated oral supplements."
+    ],
+    "references": "All evidence URLs are per-record and were located via web research on 2026-11-18."
+  },
+  "patches": [
+    {
+      "original_id": "ctl-001",
+      "original_name": "Caffeine (anhydrous, citrate, dicaffeine malate / Infinergy, PureEnergy caffeine–pterostilbene co-crystal)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Adenosine A1 and A2A receptor antagonism explains usual CNS effects; not direct dopamine D1/D2 agonism.",
+        "reported_effects": "Improves vigilance and subjective alertness; anxiety, insomnia and tremor can occur.",
+        "research_exposure": "200 mg oral caffeine vs placebo in two small randomized crossover experiments (n=8 and n=10).",
+        "alone_vs_combination": "Standalone human caffeine intervention.",
+        "interpretation_limits": "Response and tolerance vary; caffeine in guarana/guayusa/coffee is the same molecule, while source plants differ.",
+        "target_evidence": "human pharmacology established",
+        "human_effect_evidence": "controlled human effect",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/7746802/",
+          "https://pubmed.ncbi.nlm.nih.gov/22159665/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-002",
+      "original_name": "DMAA (1,3-dimethylamylamine)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Sympathomimetic stimulant. A 2024 receptor panel found no meaningful activation of tested human alpha/beta adrenoceptors by 1,3-DMAA at concentrations up to 300 µM; weak partial TAAR1 activity only at 300 µM is unlikely physiologically relevant. Monoamine transporter involvement is a hypothesis, not proven human occupancy.",
+        "reported_effects": "Human isolated study measured PK and vitals, not euphoria or improved cognition. Serious cardiovascular events have been reported in real-world exposure, often with coingredients.",
+        "research_exposure": "Single oral 25 mg in 8 men (7 analyzed): mean half-life 8.45 ± 1.9 h, plasma peak at 3–5 h; no meaningful acute resting-vital change in this small study.",
+        "alone_vs_combination": "Single ingredient in PK study; separately marketed in multi-stimulant blends.",
+        "interpretation_limits": "Tiny controlled sample does not negate case reports, establish low-dose safety, or establish recreational/euphoric effects.",
+        "target_evidence": "direct in-vitro receptor panel / no verified human receptor occupancy",
+        "human_effect_evidence": "human pharmacokinetics, not clinical efficacy",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/24090077/",
+          "https://pubmed.ncbi.nlm.nih.gov/38892500/",
+          "https://www.fda.gov/food/information-select-dietary-supplement-ingredients-and-other-substances/dmaa-products-marketed-dietary-supplements"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-003",
+      "original_name": "DMHA (2-aminoisoheptane / octodrine / 1,5-dimethylhexylamine)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Octodrine/DMHA is an alkylamine. In the 2024 human-receptor cell panel, tested dimethylhexylamine showed no alpha/beta-adrenoceptor agonism up to 300 µM and only weak TAAR1 activity at 300 µM; indirect monoamine effects are unconfirmed.",
+        "reported_effects": "Stimulation frequently claimed from multi-stimulant supplements; isolated oral human psychoactive efficacy remains unestablished.",
+        "research_exposure": "No verified controlled isolated human oral efficacy or dose-response study in sources reviewed.",
+        "alone_vs_combination": "Mainly combination products; reports cannot distinguish effects of DMHA from caffeine/yohimbine or other actives.",
+        "interpretation_limits": "Trade labels and isomers can be ambiguous. Do not present claimed alpha-adrenergic receptor subtype selectivity as measured in humans.",
+        "target_evidence": "direct in-vitro receptor panel for specified analogues",
+        "human_effect_evidence": "no controlled human effect evidence established",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/38892500/",
+          "https://www.fda.gov/food/information-select-dietary-supplement-ingredients-and-other-substances/dmha-dietary-supplements"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-004",
+      "original_name": "DMBA (1,3-dimethylbutylamine / 4-amino-2-methylpentane)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "1,3-DMBA alkylamine: 2024 panel observed no tested human alpha/beta-adrenoceptor agonism to 300 µM and weak TAAR1 response only at 300 µM; does not establish lack of indirect activity.",
+        "reported_effects": "Marketing describes stimulant effects but isolated human efficacy is undemonstrated.",
+        "research_exposure": "No validated standalone oral clinical dose.",
+        "alone_vs_combination": "Found in combination products and analytical testing.",
+        "interpretation_limits": "Do not transfer DMAA pharmacokinetics or safety data to DMBA.",
+        "target_evidence": "direct in-vitro assay; functional relevance unclear",
+        "human_effect_evidence": "no human efficacy data",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/38892500/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-005",
+      "original_name": "1,4-DMAA (2-amino-5-methylhexane; sold labelled as \"walnut extract\" / \"DMHA\")",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "1,4-DMAA (2-amino-5-methylhexane) is a distinct chemical/isomeric label; validated receptor subtype, transporter occupancy, and clinical PK are not established.",
+        "reported_effects": "No independently established isolated human effects.",
+        "research_exposure": "No validated human oral clinical dose.",
+        "alone_vs_combination": "Usually described on product labels or analytical reports, often with caffeine and other actives.",
+        "interpretation_limits": "Do not merge with 1,3-DMAA or 1,5-DMHA; published tests of those do not prove this isomer acts identically.",
+        "target_evidence": "unestablished for exact isomer",
+        "human_effect_evidence": "no controlled human effects",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/38892500/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-006",
+      "original_name": "N-phenethyl dimethylamine (sold as \"Eria jarensis\")",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "N,N-dimethylphenethylamine (marketed as Eria): a 2024 cell-based receptor panel measured dimethylphenethylamine weak partial α1B/α1D activation (EC50 ~6.1/8.4 µM) and TAAR1 activation (EC50 ~21 µM); exact formulation identity should be confirmed before assigning results.",
+        "reported_effects": "Brief euphoria/energy claims in blends have no credible isolated clinical demonstration.",
+        "research_exposure": "No established single-compound human psychoactive dose.",
+        "alone_vs_combination": "Primarily multi-stimulant products; no clean attribution.",
+        "interpretation_limits": "In-vitro potency is not human receptor occupancy or demonstrated pleasant subjective response; commercial Eria label does not prove contents.",
+        "target_evidence": "human receptor cell assay, formulation equivalence uncertain",
+        "human_effect_evidence": "no controlled human clinical effects",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/38892500/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-019",
+      "original_name": "p-Synephrine",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "p-Synephrine activated human α1A/α1B/α1D and β1 receptors in a 2024 cell panel, but at micromolar concentrations far above concentrations observed with common human oral intakes; clinical relevance cannot be inferred directly.",
+        "reported_effects": "No convincing isolated human euphoric/cognitive profile; human cardiovascular studies of mixes confounded by caffeine and other agents.",
+        "research_exposure": "Published human oral studies described 20–50 mg p-synephrine; NOT established receptor-engaging or psychoactive dose.",
+        "alone_vs_combination": "Human intake studies plus cell assays; commercial products generally contain other stimulants.",
+        "interpretation_limits": "Do not present in-vitro α-receptor affinity as evidence of strong α agonism at ordinary human exposure.",
+        "target_evidence": "human receptor cell assay; limited exposure bridging",
+        "human_effect_evidence": "limited/mixed human physiological evidence",
+        "reference_urls": ["https://www.mdpi.com/2072-6643/16/11/1567"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-020",
+      "original_name": "Methylsynephrine (oxilofrine)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Oxilofrine / methylsynephrine activated β1 and α1A in human receptor cell models (EC50 ~25 µM and ~44 µM, respectively); it was not a TAAR1 agonist at concentrations up to 300 µM.",
+        "reported_effects": "Sympathomimetic effects plausible; isolated standardized human CNS profile poorly studied.",
+        "research_exposure": "No validated modern isolated clinical psychoactive dose.",
+        "alone_vs_combination": "Mostly found in combination pre-workouts and historical drug formulations.",
+        "interpretation_limits": "Do not confuse oxilofrine with p-synephrine; chemically and pharmacologically distinct.",
+        "target_evidence": "direct human receptor cell assay",
+        "human_effect_evidence": "isolated human psychoactive effects unestablished",
+        "reference_urls": ["https://www.mdpi.com/2072-6643/16/11/1567"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-021",
+      "original_name": "Isopropylnorsynephrine (deterenol / isopropyloctopamine)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Deterenol / isopropyloctopamine acted as a relatively potent β1 agonist in the human-receptor cell assay (EC50 ~117 nM), with partial TAAR1 activation (EC50 ~1.8 µM).",
+        "reported_effects": "Heart-rate stimulation is biologically plausible; standalone subjective stimulant effects and safety not clinically established.",
+        "research_exposure": "No validated human oral psychoactive dose.",
+        "alone_vs_combination": "Usually supplements with multiple stimulants, not isolated trials.",
+        "interpretation_limits": "Cell potency does not establish human CNS access or clinical risk magnitude.",
+        "target_evidence": "in-vitro human-receptor functional assay",
+        "human_effect_evidence": "isolated human effects unestablished",
+        "reference_urls": ["https://www.mdpi.com/2072-6643/16/11/1567"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-022",
+      "original_name": "Higenamine (norcoclaurine)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Higenamine demonstrated β2 agonism in recombinant systems; the 2024 panel also found β1 agonism (EC50 ~34 nM) and partial β2 agonism (~0.47 µM). β2-only labeling is incomplete.",
+        "reported_effects": "Cardiovascular inotropic/chronotropic effects have been observed with IV exposure; oral effects not established equivalently.",
+        "research_exposure": "No justified oral psychoactive range; clinical IV exposure must not be translated into oral supplementation.",
+        "alone_vs_combination": "Mainly mechanistic/animal work, clinical IV heart studies, and combination supplement presence.",
+        "interpretation_limits": "Human clinical IV effects and cell activity do not demonstrate oral recreational stimulation.",
+        "target_evidence": "human receptor cell assay plus some physiological human IV evidence",
+        "human_effect_evidence": "no controlled oral CNS effect evidence",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/33369180/",
+          "https://www.mdpi.com/2072-6643/16/11/1567"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-031",
+      "original_name": "Yohimbine HCl",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Yohimbine is a preferential α2-adrenoceptor antagonist, enhancing noradrenergic activity; not an α2 agonist.",
+        "reported_effects": "Anxiety/panic or autonomic arousal possible, especially in panic-disorder groups; effects are not universally euphoric.",
+        "research_exposure": "Oral 10/15/20 mg in 8 healthy adults; 20 mg placebo-controlled anxiety challenge in panic patients and healthy controls.",
+        "alone_vs_combination": "Single-drug controlled human studies exist, unlike many stimulant analogues.",
+        "interpretation_limits": "Population differences important: a study in eight healthy adults found modest autonomic rather than marked anxiety effects.",
+        "target_evidence": "target pharmacology established in humans",
+        "human_effect_evidence": "human autonomic/anxiety challenge evidence",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/1504110/",
+          "https://pubmed.ncbi.nlm.nih.gov/6287139/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-032",
+      "original_name": "Rauwolscine (alpha-yohimbine)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Rauwolscine is a yohimbine stereoisomer and preferential α2-adrenoceptor antagonist in animal experiments; human receptor occupancy and effects are not established at commercial label exposures.",
+        "reported_effects": "Autonomic stimulation/anxiety hypothesised by similarity; direct human single-compound outcomes largely absent.",
+        "research_exposure": "No validated human isolated oral dose.",
+        "alone_vs_combination": "Usually combined with caffeine/synephrine; original selectivity study in anaesthetized dogs.",
+        "interpretation_limits": "Do not substitute yohimbine human dose or effect studies for rauwolscine.",
+        "target_evidence": "animal receptor pharmacology",
+        "human_effect_evidence": "no established isolated human outcomes",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/6270312/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-027",
+      "original_name": "Theacrine (TeaCrine)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Theacrine is a purine alkaloid structurally related to caffeine; specific human receptor occupancy and a caffeine-identical adenosine mechanism are not confirmed.",
+        "reported_effects": "Small studies report reduced fatigue and higher subjective energy; objective cognitive enhancement evidence is much weaker.",
+        "research_exposure": "200 mg alone vs placebo, n=15 randomized crossover (acute); open-label daily 200 or 400 mg over 7 days in n=9.",
+        "alone_vs_combination": "Has small standalone human trials, not merely caffeinated blend anecdotes.",
+        "interpretation_limits": "Early studies often small and industry-funded; outcomes subjective, no demonstrated recreational high.",
+        "target_evidence": "mechanism incompletely characterized in humans",
+        "human_effect_evidence": "limited human controlled subjective results",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/27164220/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-028",
+      "original_name": "Methylliberine (Dynamine)",
+      "original_category": "Synthetic stimulants, amines and xanthines",
+      "research_update": {
+        "target_or_receptor_profile": "Methylliberine is a methylurate; exact human CNS receptor target/occupancy is not established.",
+        "reported_effects": "Promoted for energy, but cited clinical work chiefly measures pharmacokinetics and short-term safety rather than objective mood enhancement.",
+        "research_exposure": "Human trial n=125: 100 or 150 mg/day alone, or 100+50 mg / 150+25 mg with theacrine for four weeks; separate n=12 PK cocktail contained 100 mg methylliberine plus caffeine and theacrine.",
+        "alone_vs_combination": "Standalone arms and combination arms in a four-week safety study; cocktail PK trial cannot isolate clinical effects.",
+        "interpretation_limits": "Avoid claiming randomized efficacy from a trial designed for safety.",
+        "target_evidence": "mechanism unestablished",
+        "human_effect_evidence": "human safety and PK, not proven effect",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/32121218/",
+          "https://pubmed.ncbi.nlm.nih.gov/32829142/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-042",
+      "original_name": "Modafinil (only in an older Core Labs NZT Power listing)",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Modafinil occupies dopamine transporters in the living human brain and increases extracellular dopamine; PET demonstrated roughly 39–54% reduction in DAT ligand binding across striatal regions after 200/400 mg.",
+        "reported_effects": "Wake promotion clinically established; stimulation/anxiety/insomnia possible; not simply a selective orexin agonist.",
+        "research_exposure": "Ten healthy men received 200 mg and 400 mg orally in PET study; another ten-person PET study reported mean DAT occupancy 51.4% at 200 mg and 56.9% at 300 mg.",
+        "alone_vs_combination": "Controlled standalone human neuroimaging, plus clinical therapeutic literature.",
+        "interpretation_limits": "Do not infer an equivalent occupancy for flmodafinil; occupancy does not itself quantify subjective euphoria.",
+        "target_evidence": "direct human PET target occupancy",
+        "human_effect_evidence": "established human wakefulness effects",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/19293415/",
+          "https://pubmed.ncbi.nlm.nih.gov/24451483/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-041",
+      "original_name": "Flmodafinil (CRL-40,940)",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Flmodafinil is a fluorinated modafinil analogue; modafinil-like dopamine transporter action is plausible but direct flmodafinil human DAT occupancy has not been established.",
+        "reported_effects": "No controlled clinical cognitive/alertness efficacy demonstrated by the cited 2026 experiment.",
+        "research_exposure": "2026 analytical human study: 6 volunteers each received 20 mg flmodafinil and, after washout, 20 mg fladrafinil; measured urine/dried blood spot concentrations and metabolites, not clinical benefits.",
+        "alone_vs_combination": "Human single-compound oral PK/excretion study, not controlled behavioral efficacy trial.",
+        "interpretation_limits": "IMPORTANT CORRECTION: saying there are zero human flmodafinil studies is outdated; however, do not convert its 20 mg analytical dose to a recommended dose or infer modafinil potency.",
+        "target_evidence": "no verified human target occupancy",
+        "human_effect_evidence": "human metabolism evidence only; efficacy unestablished",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/42210629/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-044",
+      "original_name": "Phenylpiracetam",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Phenylpiracetam is a chiral molecule: isolated R and S enantiomers have been characterized as dopamine transporter inhibitors in preclinical studies; commercial racemate must not be treated as if identical to either enantiomer.",
+        "reported_effects": "Rodent metabolic/inflammatory endpoints studied; stimulant/euphoric effects in healthy humans remain poorly controlled in accessible literature.",
+        "research_exposure": "R-enantiomer animal research used 50 mg/kg (mouse oral and intraperitoneal routes); no reliable transfer to human recreational doses.",
+        "alone_vs_combination": "Single enantiomers in laboratory animal studies, not typical marketed blends.",
+        "interpretation_limits": "Avoid inferring human DAT occupancy or clean dose response from isolated R/S-enantiomer mouse findings.",
+        "target_evidence": "preclinical DAT binding",
+        "human_effect_evidence": "limited/uncertain human subjective outcomes",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/32279140/",
+          "https://pubmed.ncbi.nlm.nih.gov/28743458/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-047",
+      "original_name": "Noopept (omberacetam)",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Noopept/omberacetam has experimental neuroplasticity and neuroprotection claims, but a specific clinically validated human receptor occupancy profile has not been demonstrated.",
+        "reported_effects": "Some improvement reported in patients with existing neurological impairment, not proven healthy-person memory enhancement.",
+        "research_exposure": "Open prospective post-stroke study described 60 patients and 20 mg/day; not a blinded healthy-volunteer efficacy experiment.",
+        "alone_vs_combination": "Administered alone in some Russian clinical studies; supplement anecdotes often stacked.",
+        "interpretation_limits": "Nonrandomized study, clinical population and surrogate cognitive tests limit generalization.",
+        "target_evidence": "preclinical mechanisms; no validated human receptor specificity",
+        "human_effect_evidence": "limited nonblinded patient clinical evidence",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/22500312/",
+          "https://pubmed.ncbi.nlm.nih.gov/19008801/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-048",
+      "original_name": "Sunifiram",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Sunifiram (DM-235) facilitated hippocampal LTP in mouse slices via an NMDA glycine-site-sensitive, Src/PKCα/CaMKII cascade with secondary AMPAR phosphorylation; functional pathway evidence is not proof of direct NMDA ligand binding.",
+        "reported_effects": "Improved scopolamine-impaired learning in rodents; no published controlled human benefit established in referenced work.",
+        "research_exposure": "In vitro mouse hippocampal slices 10–100 nM LTP modulation; 0.1 mg/kg intraperitoneal in rodent memory-deficit model.",
+        "alone_vs_combination": "Preclinical isolated compound, no human clinical counterpart.",
+        "interpretation_limits": "Do not label a verified direct NMDA glycine-site agonist without binding evidence; do not convert rodent doses to humans.",
+        "target_evidence": "preclinical pathway evidence",
+        "human_effect_evidence": "no human controlled effects",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/23733502/",
+          "https://pubmed.ncbi.nlm.nih.gov/12070754/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-050",
+      "original_name": "IDRA-21",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "IDRA-21 is a positive modulator that reduces AMPA-receptor desensitization; pharmacology is not completely AMPA-selective and includes kainate/NMDA interactions in experimental systems.",
+        "reported_effects": "Animal studies improved difficult delayed-memory performance; in patas monkeys it countered alprazolam-induced impairment, which is not the same as amplifying normal cognition.",
+        "research_exposure": "Rhesus macaque oral research 0.15–10 mg/kg (individualized responses); patas monkey oral 3 or 5.6 mg/kg in alprazolam challenge. No established human dose.",
+        "alone_vs_combination": "Isolated compound tested in nonhuman primates, sometimes with alprazolam challenge.",
+        "interpretation_limits": "Monkeys are not humans; long-duration behavioral findings do not establish human cognitive efficacy or safe dosing.",
+        "target_evidence": "direct in vitro plus primate pharmacodynamics",
+        "human_effect_evidence": "no controlled human trials",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/14654093/",
+          "https://pubmed.ncbi.nlm.nih.gov/7644474/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-051",
+      "original_name": "Dihexa (PNB-0408)",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Dihexa binds hepatocyte growth factor (HGF) and promotes HGF-dependent c-Met activation in cell/rodent models; this is growth-factor signalling, not a conventional dopamine receptor agonist.",
+        "reported_effects": "Rodent spatial-learning rescue and experimental synaptogenesis; no validated human cognitive effect.",
+        "research_exposure": "Published preclinical cell and rodent experiments; no established safe human oral dose.",
+        "alone_vs_combination": "Isolated experimental peptide analogue in laboratory research.",
+        "interpretation_limits": "Potential growth-related signalling is not proof of a clinical cancer effect; long-term safety unknown and should not be invented.",
+        "target_evidence": "preclinical biochemical/cell/animal",
+        "human_effect_evidence": "no human clinical outcomes",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/25187433/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-053",
+      "original_name": "9-Me-BC (9-methyl-β-carboline)",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "9-Me-BC inhibited MAO-A (IC50 ~1 µM) more strongly than MAO-B (~15.5 µM) in biochemical assays and altered astrocytic neurotrophic gene expression.",
+        "reported_effects": "Neuroprotective claims derive chiefly from cultured cells, not human mood/cognition trials.",
+        "research_exposure": "Cell concentrations in µM; no verified human oral clinical dose.",
+        "alone_vs_combination": "Cell/astrocyte experiments; retail self-reports not controlled evidence.",
+        "interpretation_limits": "MAO interaction raises theoretical interaction concerns; in vitro IC50 is not established in-vivo brain enzyme inhibition.",
+        "target_evidence": "cell and enzyme assay evidence",
+        "human_effect_evidence": "no demonstrated human benefit",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/32285253/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-074",
+      "original_name": "Tesofensine",
+      "original_category": "Peptides and drug-class compounds",
+      "research_update": {
+        "target_or_receptor_profile": "Tesofensine inhibits serotonin, noradrenaline and dopamine reuptake (triple monoamine transporter blocker), not a single receptor agonist.",
+        "reported_effects": "Weight loss and appetite effects in obesity trial; dry mouth, GI upset and insomnia commonly reported; raised heart rate at 0.5 mg/day.",
+        "research_exposure": "203 participants in 24-week obesity RCT: oral 0.25, 0.5 and 1.0 mg/day vs placebo.",
+        "alone_vs_combination": "Standalone investigational drug in controlled human trial alongside an energy-restricted diet.",
+        "interpretation_limits": "Trial endpoints do not establish euphoria or other recreational effects; not a supplement safety standard.",
+        "target_evidence": "established transporter mechanism",
+        "human_effect_evidence": "controlled human obesity outcomes",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/18950853/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-061",
+      "original_name": "Methylene blue",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Methylene blue is a redox-active compound and potently inhibits MAO-A (more than MAO-B) in enzyme assays. Its mitochondrial electron transport effects vary by concentration and setting.",
+        "reported_effects": "Some specialized medical applications; no reliable claim that a retail oral supplement gives acute stimulant euphoria or better cognition.",
+        "research_exposure": "No generalizable oral cognition dose established from cited MAO study (which was purified human-enzyme pharmacology).",
+        "alone_vs_combination": "Evidence includes purified-enzyme study and medical contexts; supplement formulas do not validate target engagement.",
+        "interpretation_limits": "MAO-A inhibition makes serotonergic drug interactions clinically important; cannot infer absence of risk from no immediate effects.",
+        "target_evidence": "direct biochemical human MAO-A enzyme inhibition",
+        "human_effect_evidence": "no clinical enhancement supported by cited assay",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/17721552/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-068",
+      "original_name": "Huperzine A",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Huperzine A is a reversible acetylcholinesterase inhibitor, indirectly increasing cholinergic transmission; it is not a selective nicotinic receptor agonist.",
+        "reported_effects": "Large phase-II Alzheimer study primary cognitive endpoint negative at lower studied dose; some exploratory higher-dose outcomes improved transiently.",
+        "research_exposure": "210 Alzheimer participants randomized to 200 µg twice daily, 400 µg twice daily or placebo for at least 16 weeks.",
+        "alone_vs_combination": "Standalone drug in controlled clinical trial, not a healthy-person nootropic validation.",
+        "interpretation_limits": "Study primary outcome at 200 µg BID was null; avoid treating exploratory 11-week result as unequivocal efficacy.",
+        "target_evidence": "established AChE pharmacology",
+        "human_effect_evidence": "controlled patient trial with null primary endpoint",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/21502597/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-069",
+      "original_name": "Mesembrenone (kanna alkaloid, as an isolate)",
+      "original_category": "Eugeroics, racetams and other synthetic nootropics",
+      "research_update": {
+        "target_or_receptor_profile": "Isolated mesembrenone inhibits SERT and PDE4 in vitro (both reported IC50 below 1 µM); effects depend on alkaloid purity and assay.",
+        "reported_effects": "Standalone mesembrenone oral human mood/psychoactivity has not been established; whole-kanna RCTs do not isolate this molecule.",
+        "research_exposure": "No validated human oral mesembrenone dose.",
+        "alone_vs_combination": "Mechanistic experiments on isolated alkaloid; human trials used standardized multialkaloid plant extracts.",
+        "interpretation_limits": "Do not directly assign Zembrin clinical dose or effect to pure mesembrenone.",
+        "target_evidence": "isolated alkaloid in-vitro targets",
+        "human_effect_evidence": "no isolated-molecule clinical effects",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/21798331/",
+          "https://pubmed.ncbi.nlm.nih.gov/25389443/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-213",
+      "original_name": "Kanna (Sceletium tortuosum; KannaEase)",
+      "original_category": "Botanicals",
+      "research_update": {
+        "target_or_receptor_profile": "Kanna/Sceletium contains variable alkaloids. Mesembrine is potent in-vitro SERT inhibitor (Ki ~1.4 nM); mesembrenone additionally affects PDE4; extract activity depends on alkaloid profile.",
+        "reported_effects": "Small trial of standardized Zembrin found better selected executive-function outcomes; 3-month safety trial reported tolerability. These do not prove acute recreational effects for arbitrary extracts.",
+        "research_exposure": "Zembrin oral extract: 8 and 25 mg/day over 3 months (n=37 safety study), and 25 mg/day for 3 weeks (n=21 cognitive crossover).",
+        "alone_vs_combination": "Human studies used standardized multi-alkaloid extract alone, not pure mesembrine and not arbitrary kanna products.",
+        "interpretation_limits": "Study-specific standardized-extract doses cannot be extrapolated to 7% alkaloid concentrated retail material.",
+        "target_evidence": "in-vitro compound targets; no PET occupancy",
+        "human_effect_evidence": "limited small human extract trials",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/21798331/",
+          "https://pubmed.ncbi.nlm.nih.gov/23441963/",
+          "https://pubmed.ncbi.nlm.nih.gov/25389443/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-214",
+      "original_name": "Kava (Piper methysticum; product name only)",
+      "original_category": "Botanicals",
+      "research_update": {
+        "target_or_receptor_profile": "Kava is a chemically diverse kavalactone mixture with multiple possible GABAergic/ion-channel effects; no single universally validated human benzodiazepine-site occupancy profile.",
+        "reported_effects": "2013 6-week randomized GAD trial found significant reduction in anxiety, while larger 2020 16-week trial did not outperform placebo.",
+        "research_exposure": "2013 trial 120–240 mg kavalactones/day (n=75 enrolled); 2020 trial 120 mg kavalactones twice daily (n=171).",
+        "alone_vs_combination": "Isolated standardized aqueous kava extract in randomized trials.",
+        "interpretation_limits": "Conclusions mixed; kavalactone amount is not the same as mass of crude kava root or extract, and quality/preparation affect safety.",
+        "target_evidence": "multiple preclinical pathways, clinical receptor occupancy unknown",
+        "human_effect_evidence": "conflicting clinical anxiety trials",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/23635869/",
+          "https://pubmed.ncbi.nlm.nih.gov/31813230/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-226",
+      "original_name": "Magnolia officinalis",
+      "original_category": "Botanicals",
+      "research_update": {
+        "target_or_receptor_profile": "Magnolol and honokiol positively allosterically modulate synaptic and extrasynaptic GABA-A receptors in neurons/recombinant systems, with particularly high efficacy in delta-containing receptors; not equivalent to a classical benzodiazepine-site ligand.",
+        "reported_effects": "Human relief-of-stress claims principally use combinations; isolated highly concentrated magnolol/honokiol psychoactivity is not established in controlled human trials.",
+        "research_exposure": "In one 6-week pilot RCT, 250 mg Relora (Magnolia + Phellodendron mixture) three times daily, n=40 recruited; not comparable to pure magnolol/honokiol dose.",
+        "alone_vs_combination": "In-vitro/neuronal isolated compounds; human trial of 2-botanical blend.",
+        "interpretation_limits": "Do not infer human exposure to isolated magnolol/honokiol or direct additivity with GABAergic sedatives from combination trial.",
+        "target_evidence": "in-vitro and neuronal receptor function",
+        "human_effect_evidence": "human effect confounded by multi-herb formulation",
+        "reference_urls": [
+          "https://pubmed.ncbi.nlm.nih.gov/22445602/",
+          "https://pubmed.ncbi.nlm.nih.gov/18426577/"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-107",
+      "original_name": "L-Theanine",
+      "original_category": "Sleep and calming compounds",
+      "research_update": {
+        "target_or_receptor_profile": "L-theanine glutamate-related and neurophysiologic effects are reported, but no established high-affinity single human CNS receptor occupancy accounts for its clinical effects.",
+        "reported_effects": "Small placebo-controlled crossover trial reported improvements in some stress, sleep and cognitive test scores after daily administration.",
+        "research_exposure": "200 mg/day oral for 4 weeks in a 30-person randomized crossover trial.",
+        "alone_vs_combination": "Standalone controlled human intervention, also present in many caffeine combinations.",
+        "interpretation_limits": "A moderate stress-score change is not evidence of an intense acute sedative or recreational effect.",
+        "target_evidence": "mechanism incomplete",
+        "human_effect_evidence": "small controlled human outcomes",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/31623400/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-104",
+      "original_name": "5-HTP",
+      "original_category": "Sleep and calming compounds",
+      "research_update": {
+        "target_or_receptor_profile": "5-HTP is a serotonin biosynthetic precursor converted by aromatic L-amino-acid decarboxylase; not itself a serotonin-receptor agonist. Peripheral conversion and GI serotonin complicate effects.",
+        "reported_effects": "In a 2026 blinded acute trial of 112 adults selected by ADHD-trait levels, no significant benefit on measured distractibility; 19.6% of active participants reported fatigue, nausea, or vomiting.",
+        "research_exposure": "Single oral 200 mg 5-HTP vs placebo with tasks repeated after 90 minutes; no validated acute recreational dose.",
+        "alone_vs_combination": "Isolated 5-HTP/placebo trial.",
+        "interpretation_limits": "Serotonergic interaction risk; a negative attention trial does not settle depression indication and dose does not prove central serotonin concentrations.",
+        "target_evidence": "biochemical serotonin precursor established",
+        "human_effect_evidence": "human controlled null cognition, adverse events",
+        "reference_urls": [
+          "https://pmc.ncbi.nlm.nih.gov/articles/PMC13189352/",
+          "https://www.mskcc.org/cancer-care/integrative-medicine/herbs/5-htp-01"
+        ],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    },
+    {
+      "original_id": "ctl-103",
+      "original_name": "Melatonin (standard, time-release, MicroActive)",
+      "original_category": "Sleep and calming compounds",
+      "research_update": {
+        "target_or_receptor_profile": "Melatonin activates MT1/MT2 receptors (chronobiotic hormone); mechanism differs from direct GABA-A sedatives.",
+        "reported_effects": "Can shift circadian timing and modestly improve sleep initiation; effects depend substantially on administration time.",
+        "research_exposure": "2024 meta-analysis of 26 double-blind RCTs (1,689 observations) found modeled sleep effects peaking around 3–5 mg/day; not a claim that high doses produce extra sedation.",
+        "alone_vs_combination": "Human single-agent randomized trials synthesized in meta-analysis; some combinations exist.",
+        "interpretation_limits": "Dose-effect curve and timing are context-specific; product labels of 10 mg do not imply greater benefit.",
+        "target_evidence": "human receptor physiology established",
+        "human_effect_evidence": "meta-analysis of human RCTs",
+        "reference_urls": ["https://pubmed.ncbi.nlm.nih.gov/38888087/"],
+        "exposure_is_recommendation": false,
+        "source_product_identity_confirmed": false,
+        "clinical_safety_established": false
+      },
+      "suggested_action": "MATCH_BY_ORIGINAL_ID_IF_AVAILABLE_ELSE_REVIEW_BY_NAME; UPDATE EXISTING ENTRY ONLY; DO_NOT_CREATE_DUPLICATE"
+    }
+  ]
+}
