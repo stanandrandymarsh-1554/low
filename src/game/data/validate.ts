@@ -41,14 +41,14 @@ export function validateCatalogue(entries: readonly Entry[]): string[] {
     checkRange(`${at} afterHours`, e.timing.afterHours);
 
     if (e.kind === 'botanical') {
-      if (!e.latin.trim()) problems.push(`${at}: missing latin name`);
+      if (e.latin !== undefined && !e.latin.trim()) problems.push(`${at}: empty latin name`);
       e.compounds.forEach((c, i) => {
         if (!c.name.trim()) problems.push(`${at} compound #${i + 1}: missing name`);
         checkRange(`${at} ${c.name} percent`, c.percent, 100);
       });
     } else {
       if (!e.chemicalClass.trim()) problems.push(`${at}: missing chemicalClass`);
-      if (!e.origin.story.trim()) problems.push(`${at}: missing origin story`);
+      if (e.origin && !e.origin.story.trim()) problems.push(`${at}: empty origin story`);
     }
   }
   return problems;

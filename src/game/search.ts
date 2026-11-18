@@ -44,7 +44,7 @@ function fieldsFor(entry: Entry, mode: SearchMode): Field[] {
   if (wants('name')) {
     add(entry.name, 10, '');
     for (const aka of entry.aka ?? []) add(aka, 8, `aka ${aka}`);
-    if (entry.kind === 'botanical') add(entry.latin, 8, entry.latin);
+    if (entry.kind === 'botanical') add(entry.latin, 8, entry.latin ?? '');
   }
 
   if (wants('compound')) {
@@ -62,6 +62,8 @@ function fieldsFor(entry: Entry, mode: SearchMode): Field[] {
       }
       add(entry.chemicalClass, 5, `class: ${entry.chemicalClass}`);
     }
+    // Targets named in the mechanism ("adenosine", "mu-opioid") count as compound-side matches.
+    add(entry.mechanism, 3, 'target');
   }
 
   if (wants('effect')) {

@@ -1,4 +1,5 @@
 import { fitText } from '../../engine/text';
+import { subtitle } from '../backcover';
 import type { Entry } from '../data/types';
 import { scanlines, setFont, text } from '../draw/ui';
 import { inRect, type Controls, type Rect, type Scene } from '../scene';
@@ -291,8 +292,7 @@ export class TerminalScene implements Scene {
         size: 22,
         color,
       });
-      const reason =
-        hit.reason || (hit.entry.kind === 'botanical' ? hit.entry.latin : hit.entry.chemicalClass);
+      const reason = hit.reason || subtitle(hit.entry);
       setFont(ctx, 20);
       text(ctx, fitText(reason, right - (x + nameW + kindW), measure), x + nameW + kindW, y, {
         size: 20,
